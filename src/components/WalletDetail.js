@@ -1,55 +1,39 @@
 import React, { Component } from 'react';
 import { Text, View, Image, TouchableOpacity, LayoutAnimation } from 'react-native';
-import { Card, CardSection } from './common';
+import { Card, CardSection, Button } from './common';
 import {WeiToEther, GetCoinImage} from '../Util.js'
-import { walletViewChanged, selectWalletChart } from '../actions';
+import { walletViewChanged, selectWalletChart, getWalletBalance } from '../actions';
 import { connect } from 'react-redux';
 import CoinChart from './CoinChart'
+import WalletDetailExtended from './WalletDetailExtended.js'
+import {Actions} from 'react-native-router-flux'
+
 
 class  WalletDetail extends Component  {
-    
-    componentWillUpdate() {
-        LayoutAnimation.spring();
-      }
-      
+
+    componentWillMount() {
+        const {wallet} = this.props
+        this.props.getWalletBalance(wallet.publicKey)
+    }
 
     onWalletPress () {
         const {wallet} = this.props
         this.props.walletViewChanged(wallet.Currency)
         this.props.selectWalletChart(wallet.Currency)
     }
-    renderDescription() {
-        const { library, expanded } = this.props;
-    
-        if (expanded) {
-          return (
-            <View>
-      
-                <CoinChart />
-          
-            </View>
-          )
-        } else {
-            return (
-                <View>
-                    {/* <Text>yes</Text> */}
-                </View>
-            )
-        }
-      }
     
     render () {
         const {priceView, expanded} = this.props
-        const { Name, Amount, Currency, Id } = this.props.wallet;
+        const { Name, Currency, Id } = this.props.wallet;
         const {cardStyle, headerContentStyle, headerTextStyle, 
             thumbnail_style, imageStyle, thumbnailContainerStyle,
             amountContentStyle} = styles;
-        if (expanded) {
             return (
                 <View>
+                <TouchableOpacity onPress={() => Actions.walletDetail({wallet: this.props.wallet, priceView: this.props.priceView, coinPrices: this.props.coinPrices})}>
                 <View>
                 <Card>
-                    <View style={{marginBottom: -3}}>
+                    <View >
                     <CardSection > 
                         <View style={thumbnailContainerStyle}>
                             <Image style={thumbnail_style} source={{ uri : GetCoinImage(Currency)}}/>
@@ -68,42 +52,7 @@ class  WalletDetail extends Component  {
                        
                     </View>
                     <View className='row'>
-                        {this.renderDescription()}
-                         {/* <InfoBox data={this.props.bpi} /> */}
-                    </View>
-                </Card>
-                </View>
-                <View>
-                {/* {this.renderDescription()} */}
-                {console.log("walletpress")}
-                </View>
-                </View >
-            )
-        } else {
-            return (
-                <TouchableOpacity onPress={() => this.props.selectWalletChart(Currency)}>
-                <View>
-                <Card>
-                    <View style={{marginBottom: -3}}>
-                    <CardSection > 
-                        <View style={thumbnailContainerStyle}>
-                            <Image style={thumbnail_style} source={{ uri : GetCoinImage(Currency)}}/>
-                        </View>
-                        <View style={headerContentStyle}>
-                            <Text style={headerTextStyle}> {Name} </Text>
-                        </View>
-                        <TouchableOpacity onPress={() => this.onWalletPress()}>
-                            <View style={amountContentStyle}>
-                            {shownCardValue(this.props.priceView[Currency], this.props)}
-                            </View>
-                        </TouchableOpacity>
-                    </CardSection>
-                    </View>
-                    <View>
-                       
-                    </View>
-                    <View className='row'>
-                        {this.renderDescription()}
+                        {/* {this.renderDescription()} */}
                          {/* <InfoBox data={this.props.bpi} /> */}
                     </View>
                 </Card>
@@ -113,10 +62,11 @@ class  WalletDetail extends Component  {
                 {console.log("walletpress")}
                 </View>
                 </TouchableOpacity >
+                </View>
             )
         }
         
-    }
+    // }
 }
 
 const styles = {
@@ -128,6 +78,10 @@ const styles = {
     },
     headerTextStyle: {
         fontSize: 18,
+        // color: '#00dcff'
+        // color: '#000000'
+        color:  "#131111"
+        
     },
     thumbnail_style: {
         height: 50,
@@ -137,7 +91,7 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
         marginLeft: 10,
-        marginRight: 10
+        marginRight: 10,
     },
     imageStyle: {
         height: 50,
@@ -148,6 +102,9 @@ const styles = {
     amountContentStyle: {
         flex: 1, //what does it mean
         justifyContent: 'center',
+        // color: '#00dcff'
+        color:  "#1f0c0f",
+        // color: '#000000'
     }
 }
 
@@ -158,21 +115,21 @@ const mapStateToProps = (state, ownProps) => {
     return  {priceView, expanded}
 };
 
-export default connect(mapStateToProps, {walletViewChanged, selectWalletChart})(WalletDetail);
+export default connect(mapStateToProps, {walletViewChanged, selectWalletChart, getWalletBalance})(WalletDetail);
 
 
 shownCardValue  = (valueView, ownProps) => {
     const {coinPrices, priceView} = ownProps
-    const { Name, Amount, Currency } = ownProps.wallet;
+    const { Name,  Currency, amount } = ownProps.wallet;
     switch(valueView) {
         case 0:
-            return  (<Text> {WeiToEther(Amount) + " " + Currency} </Text>);
+            return  (<Text style={styles.amountContentStyle}> {WeiToEther(amount) + " " + Currency} </Text>);
         case 1:
-            return (<Text> {"$" + (WeiToEther(Amount)*coinPrices["ETH"]).toFixed(2)} </Text>)
+            return (<Text style={styles.amountContentStyle}> {"$" + (WeiToEther(amount)*coinPrices["ETH"]).toFixed(2)} </Text>)
         case 2:
-            return (<Text> {"$" + coinPrices[Currency]} </Text>);
+            return (<Text style={styles.amountContentStyle}> {"$" + coinPrices[Currency]} </Text>);
         default:
-            return  (<Text> {(WeiToEther(Amount)) + " " + Currency} </Text>);
+            return  (<Text style={styles.amountContentStyle}> {(WeiToEther(amount)) + " " + Currency} </Text>);
     }
 }
 

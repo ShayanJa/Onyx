@@ -4,7 +4,7 @@ import WalletDetail from './WalletDetail.js'
 import axios from 'axios';
 import {Config} from '../Config.js'
 import _ from 'lodash';
-import { walletFetch, walletViewChanged } from '../actions';
+import { walletFetch, walletViewChanged, walletInit } from '../actions';
 import {WeiToEther, GetCoinImage} from '../Util.js';
 import {Spinner} from './common'
 
@@ -22,6 +22,10 @@ class WalletList extends Component {
     }
 
     componentWillMount() {
+        if(!this.props.isInitialized) {
+            this.props.walletInit()
+            // console.log("FUCK")
+          }  
         this.props.walletFetch();    
         this.createDataSource(this.props)
     }
@@ -38,7 +42,7 @@ class WalletList extends Component {
 
     renderRow(wallet) {
         return (
-            <View>
+            <View style={styles.tabStyle}>
                 <WalletDetail  key={wallet.Name}  wallet={wallet} coinPrices={this.props.newCoinPrices} />
                 {/* <WalletDetail  key={wallet.Name} coinPrices={this.state.coinPrices} priceView={this.state.priceView} wallet={wallet}/> */}
             </View>
@@ -50,8 +54,9 @@ class WalletList extends Component {
             return <Spinner size="large" />;
         } else {
             return (
-                <View>
-                    <ListView style={styles.albumListStyle}
+                <View >
+                    <ListView 
+                    style={styles.albumListStyle}
                     dataSource={this.state.dataSource}
                     renderRow={this.renderRow}
                     scrollEnabled={false}
@@ -70,23 +75,43 @@ const styles = {
         height: 100,
     },
     albumListStyle: {
-        // alignItems: 'center'
+        paddingBottom: 10,
+        marginTop: 30,
+        marginBottom: 40,
     },
     amountStyle : {
         fontSize: 18,
+        color: "#00dcff"
     },
     amountContainerStyle: {
         alignItems: 'center',
-        marginTop: 20
+        marginTop: 20,
+        color: "#00dcff"
+    },
+    tabStyle: {
+        
+        marginBottom: 10,
+        borderRadius: 4,
+        marginRight:5,
+        marginLeft:5,
+        color: "#00dcff"
+        // paddingTop:20,
+        // paddingBottom:10,
+        // backgroundColor:'#18cf',
+        // borderRadius:8,
+        // borderWidth: 1,
+        // borderColor: '#fff00'
     }
     
 };
 
 const mapStateToProps = ({wallet}) => {
-    const {wallets, newCoinPrices, walletTotal, loading} = wallet
-    // console.log(newCoinPrices)
-    return  {wallets, newCoinPrices, walletTotal, loading}
+    const {wallets, newCoinPrices, walletTotal, loading, isInitialized} = wallet
+    console.log("fuck you")
+    console.log(wallets)
+    return  {wallets, newCoinPrices, walletTotal, loading, isInitialized}
 };
+
   
-export default connect( mapStateToProps, { walletFetch })(WalletList);
+export default connect( mapStateToProps, { walletFetch, walletInit })(WalletList);
   

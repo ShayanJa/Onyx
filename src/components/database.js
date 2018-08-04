@@ -1,6 +1,7 @@
 import Expo, { SQLite } from 'expo';
 import React from 'react';
 import { StyleSheet, Text, View, TextInput, TouchableOpacity } from 'react-native';
+import SQLite from 'react-native-sqlite-storage'
 
 const db = SQLite.openDatabase('db.db');
 

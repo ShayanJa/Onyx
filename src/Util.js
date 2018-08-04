@@ -9,11 +9,11 @@ export function GetCoinImage(coinName) {
         case "BTC": 
             return "https://www.cryptocompare.com/media/19633/btc.png?width=200"
         case "ETH": 
-            return "https://yt3.ggpht.com/a-/AJLlDp2s1f7aZqtjMquR1N8q3ZHeTOmhFz0vaGASFg=s900-mo-c-c0xffffffff-rj-k-no"
+            return "https://s2.coinmarketcap.com/static/img/coins/200x200/1027.png"
         case "LTC":
             return "https://steemitimages.com/DQmQ3xaDyP23ghGgcrLxd8wsjjJuyqBqeFS9eye3Nx2KXEu/image.png"
         case "XRP":
-            return "https://themerkle.com/wp-content/uploads/2015/12/Ripple-XRP.png"
+            return "https://www.stickercrypto.com/assets/images/ripple_logo_x400.png"
     }
     
 }
@@ -27,6 +27,6 @@ export function GetWalletAmount (wallets, newCoinPrices) {
         var coinSymbol = wallets[i].Currency
         newTotalValue += newCoinPrices[coinSymbol]*wallets[i].Amount
     }
-    console.log(newTotalValue)
+    // console.log(newTotalValue)
     return newTotalValue
 }

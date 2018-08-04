@@ -51,7 +51,7 @@ class CoinChart extends React.PureComponent {
    
 
     render() {
-        console.log(this.props.y)
+        // console.log(this.props.y)
         const axesSvg = { fontSize: 10, fill: 'grey' };
         const verticalContentInset = { top: 10, bottom: 10 }
         const xAxisHeight = 30

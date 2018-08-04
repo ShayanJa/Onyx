@@ -1,5 +1,5 @@
 import { Actions } from 'react-native-router-flux'
-// import Expo, { SQLite } from 'expo';
+// import SQLite from 'react-native-sqlite-storage'
 import {
     WALLET_FETCH_SUCCESS,
     WALLET_COINMARKETCAP_API_FETCH_SUCCESS,
@@ -10,50 +10,88 @@ import {
     WALLET_SCROLL_ENABLED,
     WALLET_BUY,
     WALLET_SELL,
+    WALLET_INIT,
+    GET_WALLET_BALANCE,
 } from './types'
 
+// import blockexplorer from 'blockchain.info/blockexplorer'
+import '../../shim' // make sure to use es6 import and not require()
+import bitcoin from 'react-native-bitcoinjs-lib'
+import bip39 from 'bip39'
 import { Config } from '../Config.js'
 import axios from 'axios'
+// var SQLite = require('react-native-sqlite-storage');
+// import SQLite from "react-native-sqlite-storage";
+
+// let walletDB = SQLite.openDatabase({name : "wallet.db", createFromLocation : "~db/wallet.sqlite"}, successCB,errorCB);
+
+
+
+
+export const walletInit = () => {
+    //Generate all wallet public and private keys
+    // const bitcoin = require("bitcoinjs-lib");
+    return (dispatch) => {
+       
+        // const mnemonic = bip39.generateMnemonic(256)
+        const mnemonic = bip39.generateMnemonic(128)
+        console.log(mnemonic)
+        const seed = bip39.mnemonicToSeed(mnemonic)
+          
+        const master = bitcoin.HDNode.fromSeedBuffer(seed, bitcoin.networks.bitcoin);
+        const derived = master.derivePath("m/44'/0'/0'/0/0");
+        const publicKey = derived.getAddress();
+        const privateKey = derived.keyPair.toWIF();
+
+        console.log(publicKey);
+
+        return axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance').then(function(response) {
+            //get amount value from blockexplorer
+            var amount = response.data
+            console.log("wtf m8")
+            console.log(response)
+            dispatch({ type: WALLET_INIT, payload: {mnemonic, privateKey, publicKey, amount }})
+
+        }).catch( function (error) {
+            console.log(error)
+        })
+
+        // return dispatch({ type: WALLET_INIT, payload: {mnemonic, privateKey, publicKey}})
+    }
+    //return a seed, wif, derived, to the payload an
+}
+
+export const ETHWalletInit = () => {
+    return (dispatch) => {
+    }
+}
 
 
 export const walletFetch = () => {
     return (dispatch) => {
         dispatch({type: WALLET_FETCH})
-
-        wallets =[]
-        // const db = SQLite.openDatabase('db.db');
-        // db.transaction(tx => {
-        //     tx.executeSql(
-        //       'create table if not exists wallets (id integer primary key not null, done int, value text);'
-        //     );
-        //     tx.executeSql('insert into wallets (done, value) values (0, ?)', ["bill"]);
-        // })
-        // db.transaction(tx => {
-        //     tx.executeSql(
-        //       `select * from wallets ;`,
-        //       (_, { rows: { _array } }) => {wallets= _array})}
-        //     );
-        //     console.log(wallets)
-        
-        
+        // const keyPair = Bitcoin.ECPair.makeRandom();
+        // const address = keyPair.getAddress();
+        // console.log("address")
+        // console.log(address);
         var self = this;
         //Get All wallet addresses by user
-        axios.post(Config.API + '/btc/wallet/all', {
-            username: "shyshawn"
-        }).then(function (response) {
-            dispatch({ type: WALLET_FETCH_SUCCESS, payload: response.data})
-            console.log(response.data)
+        // return axios.post(Config.API + '/btc/wallet/all', {
+            // username: "shyshawn"
+        // }).then(function (response) {
+            // dispatch({ type: WALLET_FETCH_SUCCESS, payload: response.data})
+            // console.log(response.data)
             //Get Coin prices from coinmarketcap
             //And get total wallet values
-            var wallets = response.data
-            axios.get('https://api.coinmarketcap.com/v1/ticker/?limit=10').then(function(response) {
+            // var wallets = response.data
+        return axios.get('https://api.coinmarketcap.com/v1/ticker/?limit=10').then(function(response) {
                 var newCoinPrices = {}
                 
                 for (var i = 0; i < response.data.length; i++){
                     var coin = response.data[i]
                     newCoinPrices[coin.symbol] = coin.price_usd
                 } 
-
+                // console.log(response.data)
                 //get wallet amount
                 var walletTotal = 0
                 for (var i = 0; i < wallets.length; i++){
@@ -61,7 +99,7 @@ export const walletFetch = () => {
                     walletTotal += newCoinPrices[coinSymbol]*wallets[i].Amount
                 }
                 dispatch({ type: WALLET_COINMARKETCAP_API_FETCH_SUCCESS, payload: {wallets, newCoinPrices, walletTotal}})
-            })
+            // })
         })
         .catch( function (error) {
             // //Get Coin prices from coinmarketcap
@@ -71,7 +109,7 @@ export const walletFetch = () => {
             //use defaultWallet Value instead for testing and not connected to internet
             */
             dispatch({ type: WALLET_FETCH_SUCCESS, payload: defaultWalletFetchValue})
-            axios.get('https://api.coinmarketcap.com/v1/ticker/?limit=10').then(function(response) {
+            return axios.get('https://api.coinmarketcap.com/v1/ticker/?limit=10').then(function(response) {
                 var newCoinPrices = {}
                 var wallets = defaultWalletFetchValue
                
@@ -88,11 +126,25 @@ export const walletFetch = () => {
                     console.log(walletTotal)
                 }
 
-                dispatch({ type: WALLET_COINMARKETCAP_API_FETCH_SUCCESS, payload: {wallets, newCoinPrices, walletTotal}})
+                dispatch({ type: WALLET_COINMARKETCAP_API_FETCH_SUCCESS, payload: { newCoinPrices, walletTotal }})
             })
         })  
     }
     
+}
+
+export const getWalletBalance = (publicKey) => {
+    return (dispatch) => {
+        return axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance').then(function(response) {
+            //get amount value from blockexplorer
+            var amount = response.data
+            dispatch({ type: GET_WALLET_BALANCE, payload: response.data})
+
+        }).catch( function (error) {
+            console.log(publicKey)
+            console.log(error)
+        })
+    }
 }
 
 export const walletViewChanged = (walletCurrency) => {
@@ -140,6 +192,11 @@ export const walletSell = (walletCurrency, amount) => {
         payload: {walletCurrency, amount}
     }
 }
+
+
+
+
+
 
 
 
@@ -195,3 +252,22 @@ const defaultWalletFetchValue =
           "Amount": 1000000000000000000000
         }
       ]
+
+export const dbInit = () => {
+    return (dispatch) => {
+        dispatch({type: WALLET_FETCH})
+    }
+}
+
+function errorCB(err) {
+    console.log("SQL Error: " + err);
+}
+      
+function successCB() {
+    console.log("SQL executed fine");
+}
+      
+function openCB() {
+    console.log("Database OPENED");
+}
+

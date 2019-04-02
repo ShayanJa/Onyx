@@ -18,51 +18,47 @@ class  WalletDetail extends Component  {
 
     onWalletPress () {
         const {wallet} = this.props
-        this.props.walletViewChanged(wallet.Currency)
-        this.props.selectWalletChart(wallet.Currency)
+        this.props.walletViewChanged(wallet.currency)
+        this.props.selectWalletChart(wallet.currency)
     }
     
     render () {
-        const {priceView, expanded} = this.props
-        const { Name, Currency, Id } = this.props.wallet;
+        const { name, currency, Id } = this.props.wallet;
         const {cardStyle, headerContentStyle, headerTextStyle, 
             thumbnail_style, imageStyle, thumbnailContainerStyle,
             amountContentStyle} = styles;
-            return (
+        console.log(currency)
+        return (
+            <View>
+            <TouchableOpacity onPress={() => Actions.walletDetail({wallet: this.props.wallet, priceView: this.props.priceView, coinPrices: this.props.coinPrices})}>
                 <View>
-                <TouchableOpacity onPress={() => Actions.walletDetail({wallet: this.props.wallet, priceView: this.props.priceView, coinPrices: this.props.coinPrices})}>
-                <View>
-                <Card>
-                    <View >
-                    <CardSection > 
-                        <View style={thumbnailContainerStyle}>
-                            <Image style={thumbnail_style} source={{ uri : GetCoinImage(Currency)}}/>
-                        </View>
-                        <View style={headerContentStyle}>
-                            <Text style={headerTextStyle}> {Name} </Text>
-                        </View>
-                        <TouchableOpacity onPress={() => this.onWalletPress()}>
-                            <View style={amountContentStyle}>
-                            {shownCardValue(this.props.priceView[Currency], this.props)}
+                    <Card>
+                        <View >
+                        <CardSection > 
+                            <View style={thumbnailContainerStyle}>
+                                <Image style={thumbnail_style} source={{ uri : GetCoinImage(currency)}}/>
                             </View>
-                        </TouchableOpacity>
-                    </CardSection>
-                    </View>
-                    <View>
-                       
-                    </View>
-                    <View className='row'>
-                        {/* {this.renderDescription()} */}
-                         {/* <InfoBox data={this.props.bpi} /> */}
-                    </View>
-                </Card>
+                            <View style={headerContentStyle}>
+                                <Text style={headerTextStyle}> {name} </Text>
+                            </View>
+                            <TouchableOpacity onPress={() => this.onWalletPress()}>
+                                <View style={amountContentStyle}>
+                                {shownCardValue(this.props.priceView[currency], this.props)}
+                                </View>
+                            </TouchableOpacity>
+                        </CardSection>
+                        </View>
+                        <View>
+                            
+                        </View>
+                        <View className='row'>
+                            {/* {this.renderDescription()} */}
+                                {/* <InfoBox data={this.props.bpi} /> */}
+                        </View>
+                    </Card>
                 </View>
-                <View>
-                {/* {this.renderDescription()} */}
-                {console.log("walletpress")}
-                </View>
-                </TouchableOpacity >
-                </View>
+            </TouchableOpacity >
+            </View>
             )
         }
         
@@ -109,7 +105,7 @@ const styles = {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    const expanded = state.wallet.selectedWalletId === ownProps.wallet.Currency;
+    const expanded = state.wallet.selectedWalletId === ownProps.wallet.currency;
     const {priceView} = state.wallet
     console.log(priceView)
     return  {priceView, expanded}
@@ -119,17 +115,17 @@ export default connect(mapStateToProps, {walletViewChanged, selectWalletChart, g
 
 
 shownCardValue  = (valueView, ownProps) => {
-    const {coinPrices, priceView} = ownProps
-    const { Name,  Currency, amount } = ownProps.wallet;
+    const {coinPrices } = ownProps
+    const { currency, amount } = ownProps.wallet;
     switch(valueView) {
         case 0:
-            return  (<Text style={styles.amountContentStyle}> {WeiToEther(amount) + " " + Currency} </Text>);
+            return  (<Text style={styles.amountContentStyle}> {WeiToEther(amount) + " " + currency} </Text>);
         case 1:
             return (<Text style={styles.amountContentStyle}> {"$" + (WeiToEther(amount)*coinPrices["ETH"]).toFixed(2)} </Text>)
         case 2:
-            return (<Text style={styles.amountContentStyle}> {"$" + coinPrices[Currency]} </Text>);
+            return (<Text style={styles.amountContentStyle}> {"$" + coinPrices[currency]} </Text>);
         default:
-            return  (<Text style={styles.amountContentStyle}> {(WeiToEther(amount)) + " " + Currency} </Text>);
+            return  (<Text style={styles.amountContentStyle}> {(WeiToEther(amount)) + " " + currency} </Text>);
     }
 }
 

@@ -1,9 +1,7 @@
 import React from 'react';
 import { Scene, Router, View, Image, Text} from 'react-native-router-flux';
-import LoginForm from './components/LoginForm.js'
 import WalletList from './components/WalletList.js'
 import AppLogo from './components/headers/AppLogo.js'
-import {Card, CardSection} from './components/common'
 import CoinChart from './components/CoinChart'
 import WalletDetailExtended from './components/WalletDetailExtended'
 // import ScanScreen from './components/ScanScreen.js';
@@ -12,14 +10,13 @@ const RouterComponent = () => {
     return (
         <Router navigationBarStyle={styles.navBarStyles}>
             <Scene key="root" >
-                <Scene sceneStyle={{marginTop: 80}} key="login" component={LoginForm} title="Please Login" />
                 <Scene 
                     key="walletDetail" 
                     sceneStyle={{marginTop: 85, backgroundColor: '#f1ffff'}}
                     component={WalletDetailExtended} 
                     renderTitle={() => <AppLogo/>} />
                 <Scene 
-                    sceneStyle={{marginTop: 72, backgroundColor: '#f1ffff'}} 
+                    sceneStyle={{marginTop: 80, backgroundColor: '#f1ffff'}} 
                     key="walletList" component={WalletList}            
                     renderTitle={() => <AppLogo/>} 
                     initial />
@@ -57,7 +54,7 @@ const styles = {
         borderBottomWidth: 2, 
         // borderLeftWidth:0, 
         // elevation:10,   
-        height: 90,     
+        height: 100,     
         // textShadowColor: 'rgba(35,35, 35, 0.25)',
         // textShadowOffset: {width: 3, height: 1},
         // textShadowRadius: 2 

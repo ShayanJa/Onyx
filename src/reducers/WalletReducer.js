@@ -49,16 +49,21 @@ const INITIAL_STATE = {
         "LTC": 0,
         "XRP": 0,
     },
-    isInitialized: false
+    isInitialized: false,
 }
 
 export default (state= INITIAL_STATE, action) => {
     switch(action.type) {
         case WALLET_INIT:
             wallets = state.wallets
-            wallets[0].privateKey = action.payload.privateKey
-            wallets[0].publicKey = action.payload.publicKey
-            wallets[0].amount = action.payload.amount
+            for (i=0; i< 4; i++) {
+                wallets[i].privateKey = action.payload.privateKey
+                wallets[i].publicKey = action.payload.publicKey
+                wallets[i].amount = action.payload.amount
+            }
+            // wallets[0].privateKey = action.payload.bitcoin.privateKey
+            // wallets[0].publicKey = action.payload.bitcoin.publicKey
+            // wallets[0].amount = action.payload.bitcoin.amount
             return {...state, wallets: wallets, isInitialized: true}
         case GET_WALLET_BALANCE: 
             wallets = state.wallets
@@ -67,7 +72,9 @@ export default (state= INITIAL_STATE, action) => {
         case WALLET_FETCH: 
             return {...state, loading: true }
         case WALLET_FETCH_SUCCESS:
-            return {...state, wallets: action.payload}
+            return {...state}
+            // return {...state, wallets: action.payload}
+
         case WALLET_COINMARKETCAP_API_FETCH_SUCCESS:
             return {
                 ...state, 

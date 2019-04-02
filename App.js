@@ -6,7 +6,6 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { StyleSheet, Text, TextInput, View , NavigatorIOS} from 'react-native';
 import ReduxThunk from 'redux-thunk'
 import {Header} from './src/components/common'
-import WalletList from './src/components/WalletList.js'
 import Router from './src/Router.js'
 import { connect } from 'react-redux';
 // import firebase from 'firebase'
@@ -14,7 +13,7 @@ import reducers from './src/reducers'
 import { walletInit } from './src/actions';
 import { PersistGate } from 'redux-persist/integration/react';
 import {SQLite} from 'react-native-sqlite-storage';
-
+import { purgeStoredState } from 'redux-persist'
 
 export default class App extends React.Component {
   state = { loggedIn: null };
@@ -39,9 +38,8 @@ export default class App extends React.Component {
     let persistor = persistStore(store, 
       {
         storage: SQLite,
-        
       })
-
+    // persistor.purge()
     // const store = createStore(reducers, {}, applyMiddleware(ReduxThunk))
     return (
       <Provider  store ={store}>

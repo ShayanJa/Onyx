@@ -10,12 +10,9 @@ const AppLogo = () => {
 
     return (
     <View style={headerStyle}>
-        {/* <Image source={{ uri: "https://cdn3.iconfinder.com/data/icons/menu-icons-1/100/menu-512.png"}}
-            style={styles.appLogoStyle } /> */}
         <Image
-          source={require('../../../onyx.png')}
+          source={require('../../assets/onyx.png')}
         />
-        {/* <Text style={logoTextStyle}>OnYX</Text> */}
     </View>
     );
 };
@@ -29,9 +26,9 @@ const styles = {
         // justifyContent: 'flex-start', 
         flexDirection: 'row', 
         
-        marginTop: 0, 
+        marginTop: 20, 
         marginLeft: 0,
-        marginBottom: 20
+        marginBottom: 30
     },
     appLogoStyle: {
         // justifyContent: 'center',

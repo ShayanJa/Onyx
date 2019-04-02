@@ -24,9 +24,11 @@ class WalletList extends Component {
     componentWillMount() {
         if(!this.props.isInitialized) {
             this.props.walletInit()
-            // console.log("FUCK")
-          }  
-        this.props.walletFetch();    
+            console.log("Initializing wallet")
+        }  
+        console.log("right here")
+        console.log(this.props.wallets)
+        this.props.walletFetch(this.props.wallets);    
         this.createDataSource(this.props)
     }
     componentWillReceiveProps(nextProps) {
@@ -41,6 +43,8 @@ class WalletList extends Component {
     }
 
     renderRow(wallet) {
+        console.log("hey")
+        console.log(wallet.Name)
         return (
             <View style={styles.tabStyle}>
                 <WalletDetail  key={wallet.Name}  wallet={wallet} coinPrices={this.props.newCoinPrices} />
@@ -107,8 +111,8 @@ const styles = {
 
 const mapStateToProps = ({wallet}) => {
     const {wallets, newCoinPrices, walletTotal, loading, isInitialized} = wallet
-    console.log("fuck you")
     console.log(wallets)
+    console.log('hey')
     return  {wallets, newCoinPrices, walletTotal, loading, isInitialized}
 };
 

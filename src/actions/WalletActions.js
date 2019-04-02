@@ -55,8 +55,6 @@ export const walletInit = () => {
         }).catch( function (error) {
             console.log(error)
         })
-
-        // return dispatch({ type: WALLET_INIT, payload: {mnemonic, privateKey, publicKey}})
     }
     //return a seed, wif, derived, to the payload an
 }
@@ -67,7 +65,7 @@ export const ETHWalletInit = () => {
 }
 
 
-export const walletFetch = () => {
+export const walletFetch = (wallets) => {
     return (dispatch) => {
         dispatch({type: WALLET_FETCH})
         // const keyPair = Bitcoin.ECPair.makeRandom();
@@ -79,11 +77,13 @@ export const walletFetch = () => {
         // return axios.post(Config.API + '/btc/wallet/all', {
             // username: "shyshawn"
         // }).then(function (response) {
-            // dispatch({ type: WALLET_FETCH_SUCCESS, payload: response.data})
+            // dispatch({ type: WALLET_FETCH_SUCCESS, payload: {wallets}})
             // console.log(response.data)
             //Get Coin prices from coinmarketcap
             //And get total wallet values
             // var wallets = response.data
+            console.log("yy")
+
         return axios.get('https://api.coinmarketcap.com/v1/ticker/?limit=10').then(function(response) {
                 var newCoinPrices = {}
                 
@@ -91,15 +91,23 @@ export const walletFetch = () => {
                     var coin = response.data[i]
                     newCoinPrices[coin.symbol] = coin.price_usd
                 } 
-                // console.log(response.data)
+                console.log(response.data)
+                console.log("heyyy")
+                // wallets = this.props.wallets
+                console.log(wallets)
                 //get wallet amount
                 var walletTotal = 0
+                
+
                 for (var i = 0; i < wallets.length; i++){
                     var coinSymbol = wallets[i].Currency
                     walletTotal += newCoinPrices[coinSymbol]*wallets[i].Amount
                 }
-                dispatch({ type: WALLET_COINMARKETCAP_API_FETCH_SUCCESS, payload: {wallets, newCoinPrices, walletTotal}})
+                dispatch({ type: WALLET_COINMARKETCAP_API_FETCH_SUCCESS, payload: { newCoinPrices, walletTotal}})
+                // dispatch({ type: WALLET_FETCH_SUCCESS, payload: {wallets}})
+
             // })
+
         })
         .catch( function (error) {
             // //Get Coin prices from coinmarketcap
@@ -108,7 +116,8 @@ export const walletFetch = () => {
             ****JUST DEVELOPMENT
             //use defaultWallet Value instead for testing and not connected to internet
             */
-            dispatch({ type: WALLET_FETCH_SUCCESS, payload: defaultWalletFetchValue})
+            console.log("YOLO")
+            dispatch({ type: WALLET_FETCH_SUCCESS, payload: {defaultWalletFetchValue}})
             return axios.get('https://api.coinmarketcap.com/v1/ticker/?limit=10').then(function(response) {
                 var newCoinPrices = {}
                 var wallets = defaultWalletFetchValue
@@ -141,6 +150,7 @@ export const getWalletBalance = (publicKey) => {
             dispatch({ type: GET_WALLET_BALANCE, payload: response.data})
 
         }).catch( function (error) {
+            console.log("unable to get balance for " + publicKey)
             console.log(publicKey)
             console.log(error)
         })

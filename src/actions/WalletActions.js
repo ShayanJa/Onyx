@@ -1,9 +1,8 @@
 import { Actions } from 'react-native-router-flux'
-// import SQLite from 'react-native-sqlite-storage'
 import {
     WALLET_FETCH_SUCCESS,
     WALLET_COINMARKETCAP_API_FETCH_SUCCESS,
-    WALLET_FETCH_TOTAL_AMOUNT,
+    WALLET_FETCH_NETWORK_ERROR,
     WALLET_FETCH,
     WALLET_VIEW_CHANGED,
     SELECT_WALLET_CHART,
@@ -16,14 +15,14 @@ import {
 } from './types'
 
 // import blockexplorer from 'blockchain.info/blockexplorer'
-import '../../shim' // make sure to use es6 import and not require()
+// import '../shim' // make sure to use es6 import and not require()
 import bitcoin from 'react-native-bitcoinjs-lib'
 import bip39 from 'bip39'
-import { Config } from '../Config.js'
+
 import axios from 'axios'
 // var SQLite = require('react-native-sqlite-storage');
 // import SQLite from "react-native-sqlite-storage";
-
+// import SQLite from 'react-native-sqlite-storage'
 // let walletDB = SQLite.openDatabase({name : "wallet.db", createFromLocation : "~db/wallet.sqlite"}, successCB,errorCB);
 
 
@@ -45,10 +44,9 @@ export const walletInit = () => {
 
         //Get coin value amounts
         try {
-            const response = await axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance');
             //get amount value from blockexplorer
+            const response = await axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance');
             var amount = response.data;
-            console.log(response);
             dispatch({ type: WALLET_INIT, payload: { mnemonic, privateKey, publicKey, amount } });
         }
         catch (error) {
@@ -91,22 +89,7 @@ export const walletFetch = (wallets) => {
             ****JUST DEVELOPMENT
             //use defaultWallet Value instead for testing and not connected to internet
             */
-            dispatch({ type: WALLET_FETCH_SUCCESS, payload: { defaultWalletFetchValue } });
-            // const response_1 = await axios.get('https://api.coinmarketcap.com/v1/ticker/?limit=10');
-            // var newCoinPrices_1 = {};
-            // var wallets = defaultWalletFetchValue;
-            // for (var i_3 = 0; i_3 < response_1.data.length; i_3++) {
-            //     var coin_1 = response_1.data[i_3];
-            //     newCoinPrices_1[coin_1.symbol] = coin_1.price_usd;
-            // }
-            // //get wallet amount
-            // var walletTotal_1 = 0;
-            // for (var i_3 = 0; i_3 < wallets.length; i_3++) {
-            //     var coinSymbol_1 = wallets[i_3].Currency;
-            //     walletTotal_1 += newCoinPrices_1[coinSymbol_1] * wallets[i_3].Amount;
-            //     console.log(walletTotal_1);
-            // }
-            // dispatch({ type: WALLET_COINMARKETCAP_API_FETCH_SUCCESS, payload: { newCoinPrices, walletTotal } });
+            dispatch({ type: WALLET_FETCH_NETWORK_ERROR, payload: {} });
         }  
     }
     

@@ -39,7 +39,7 @@ export default class App extends React.Component {
       {
         storage: SQLite,
       })
-    // persistor.purge()
+    persistor.purge()
     return (
       <Provider  store ={store}>
         <PersistGate loading={null} persistor={persistor}>

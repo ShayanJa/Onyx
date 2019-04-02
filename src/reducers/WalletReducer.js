@@ -9,7 +9,7 @@ import {
     WALLET_SCROLL_ENABLED,
     WALLET_INIT,
     GET_WALLET_BALANCE,
-    GET_WALLET_BALANCE_FAIL
+    WALLET_FETCH_NETWORK_ERROR
 } from '../actions/types'
 import _ from 'lodash';
 const INITIAL_STATE = {
@@ -70,7 +70,7 @@ export default (state= INITIAL_STATE, action) => {
             wallets = state.wallets
             wallets[0].amount = action.payload
             return {...state, wallets:wallets}
-        case GET_WALLET_BALANCE_FAIL: 
+        case WALLET_FETCH_NETWORK_ERROR: 
             return {...state}
         case WALLET_FETCH: 
             return {...state, loading: true }

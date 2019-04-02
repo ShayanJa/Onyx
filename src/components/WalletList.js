@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import { Text, View, ScrollView, TouchableOpacity, ListView } from 'react-native';
+import { Text, View, ListView } from 'react-native';
 import WalletDetail from './WalletDetail.js'
-import axios from 'axios';
-import {Config} from '../Config.js'
 import _ from 'lodash';
-import { walletFetch, walletViewChanged, walletInit } from '../actions';
-import {WeiToEther, GetCoinImage} from '../Util.js';
+import { walletFetch, walletInit } from '../actions';
+import {WeiToEther} from '../Util.js';
 import {Spinner} from './common'
 
 import { connect } from 'react-redux';
@@ -26,8 +24,6 @@ class WalletList extends Component {
             this.props.walletInit()
             console.log("Initializing wallet")
         }  
-        console.log("right here")
-        console.log(this.props.wallets)
         this.props.walletFetch(this.props.wallets);    
         this.createDataSource(this.props)
     }
@@ -43,12 +39,9 @@ class WalletList extends Component {
     }
 
     renderRow(wallet) {
-        console.log("hey")
-        console.log(wallet.Name)
         return (
             <View style={styles.tabStyle}>
                 <WalletDetail  key={wallet.Name}  wallet={wallet} coinPrices={this.props.newCoinPrices} />
-                {/* <WalletDetail  key={wallet.Name} coinPrices={this.state.coinPrices} priceView={this.state.priceView} wallet={wallet}/> */}
             </View>
         ); 
     }
@@ -92,21 +85,13 @@ const styles = {
         marginTop: 20,
         color: "#00dcff"
     },
-    tabStyle: {
-        
+    tabStyle: { 
         marginBottom: 10,
         borderRadius: 4,
         marginRight:5,
         marginLeft:5,
         color: "#00dcff"
-        // paddingTop:20,
-        // paddingBottom:10,
-        // backgroundColor:'#18cf',
-        // borderRadius:8,
-        // borderWidth: 1,
-        // borderColor: '#fff00'
     }
-    
 };
 
 const mapStateToProps = ({wallet}) => {

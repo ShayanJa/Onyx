@@ -40,7 +40,6 @@ export default class App extends React.Component {
         storage: SQLite,
       })
     // persistor.purge()
-    // const store = createStore(reducers, {}, applyMiddleware(ReduxThunk))
     return (
       <Provider  store ={store}>
         <PersistGate loading={null} persistor={persistor}>
@@ -53,9 +52,7 @@ export default class App extends React.Component {
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     backgroundColor: '#1fff0f',
-
     justifyContent: 'center',
   },
 });

@@ -12,6 +12,7 @@ import {
     WALLET_SELL,
     WALLET_INIT,
     GET_WALLET_BALANCE,
+    GET_WALLET_BALANCE_FAIL
 } from './types'
 
 // import blockexplorer from 'blockchain.info/blockexplorer'
@@ -30,8 +31,7 @@ import axios from 'axios'
 
 export const walletInit = () => {
     //Generate all wallet public and private keys
-    // const bitcoin = require("bitcoinjs-lib");
-    return (dispatch) => {
+    return async (dispatch) => {
        
         // const mnemonic = bip39.generateMnemonic(256)
         const mnemonic = bip39.generateMnemonic(128)
@@ -43,18 +43,19 @@ export const walletInit = () => {
         const publicKey = derived.getAddress();
         const privateKey = derived.keyPair.toWIF();
 
-        console.log(publicKey);
-
-        return axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance').then(function(response) {
+        //Get coin value amounts
+        try {
+            const response = await axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance');
             //get amount value from blockexplorer
-            var amount = response.data
-            console.log("wtf m8")
-            console.log(response)
-            dispatch({ type: WALLET_INIT, payload: {mnemonic, privateKey, publicKey, amount }})
-
-        }).catch( function (error) {
-            console.log(error)
-        })
+            var amount = response.data;
+            console.log(response);
+            dispatch({ type: WALLET_INIT, payload: { mnemonic, privateKey, publicKey, amount } });
+        }
+        catch (error) {
+            console.log(error);
+            amount = 0
+            dispatch({ type: WALLET_INIT, payload: { mnemonic, privateKey, publicKey, amount } });
+        }
     }
     //return a seed, wif, derived, to the payload an
 }
@@ -66,94 +67,63 @@ export const ETHWalletInit = () => {
 
 
 export const walletFetch = (wallets) => {
-    return (dispatch) => {
+    return async (dispatch) => {
         dispatch({type: WALLET_FETCH})
-        // const keyPair = Bitcoin.ECPair.makeRandom();
-        // const address = keyPair.getAddress();
-        // console.log("address")
-        // console.log(address);
         var self = this;
-        //Get All wallet addresses by user
-        // return axios.post(Config.API + '/btc/wallet/all', {
-            // username: "shyshawn"
-        // }).then(function (response) {
-            // dispatch({ type: WALLET_FETCH_SUCCESS, payload: {wallets}})
-            // console.log(response.data)
-            //Get Coin prices from coinmarketcap
-            //And get total wallet values
-            // var wallets = response.data
-            console.log("yy")
-
-        return axios.get('https://api.coinmarketcap.com/v1/ticker/?limit=10').then(function(response) {
-                var newCoinPrices = {}
-                
-                for (var i = 0; i < response.data.length; i++){
-                    var coin = response.data[i]
-                    newCoinPrices[coin.symbol] = coin.price_usd
-                } 
-                console.log(response.data)
-                console.log("heyyy")
-                // wallets = this.props.wallets
-                console.log(wallets)
-                //get wallet amount
-                var walletTotal = 0
-                
-
-                for (var i = 0; i < wallets.length; i++){
-                    var coinSymbol = wallets[i].Currency
-                    walletTotal += newCoinPrices[coinSymbol]*wallets[i].Amount
-                }
-                dispatch({ type: WALLET_COINMARKETCAP_API_FETCH_SUCCESS, payload: { newCoinPrices, walletTotal}})
-                // dispatch({ type: WALLET_FETCH_SUCCESS, payload: {wallets}})
-
-            // })
-
-        })
-        .catch( function (error) {
+        try {
+            const response = await axios.get('https://api.coinmarketcap.com/v1/ticker/?limit=10');
+            var newCoinPrices = {};
+            for (var i = 0; i < response.data.length; i++) {
+                var coin = response.data[i];
+                newCoinPrices[coin.symbol] = coin.price_usd;
+            }
+            //get wallet amount
+            var walletTotal = 0;
+            for (var i = 0; i < wallets.length; i++) {
+                var coinSymbol = wallets[i].Currency;
+                walletTotal += newCoinPrices[coinSymbol] * wallets[i].Amount;
+            }
+            dispatch({ type: WALLET_COINMARKETCAP_API_FETCH_SUCCESS, payload: { newCoinPrices, walletTotal } });
+        }
+        catch (error) {
             // //Get Coin prices from coinmarketcap
-
             /*
             ****JUST DEVELOPMENT
             //use defaultWallet Value instead for testing and not connected to internet
             */
-            console.log("YOLO")
-            dispatch({ type: WALLET_FETCH_SUCCESS, payload: {defaultWalletFetchValue}})
-            return axios.get('https://api.coinmarketcap.com/v1/ticker/?limit=10').then(function(response) {
-                var newCoinPrices = {}
-                var wallets = defaultWalletFetchValue
-               
-                for (var i = 0; i < response.data.length; i++){
-                    var coin = response.data[i]
-                    newCoinPrices[coin.symbol] = coin.price_usd
-                    
-                } 
-                //get wallet amount
-                var walletTotal = 0
-                for (var i = 0; i < wallets.length; i++){
-                    var coinSymbol = wallets[i].Currency
-                    walletTotal += newCoinPrices[coinSymbol]*wallets[i].Amount
-                    console.log(walletTotal)
-                }
-
-                dispatch({ type: WALLET_COINMARKETCAP_API_FETCH_SUCCESS, payload: { newCoinPrices, walletTotal }})
-            })
-        })  
+            dispatch({ type: WALLET_FETCH_SUCCESS, payload: { defaultWalletFetchValue } });
+            // const response_1 = await axios.get('https://api.coinmarketcap.com/v1/ticker/?limit=10');
+            // var newCoinPrices_1 = {};
+            // var wallets = defaultWalletFetchValue;
+            // for (var i_3 = 0; i_3 < response_1.data.length; i_3++) {
+            //     var coin_1 = response_1.data[i_3];
+            //     newCoinPrices_1[coin_1.symbol] = coin_1.price_usd;
+            // }
+            // //get wallet amount
+            // var walletTotal_1 = 0;
+            // for (var i_3 = 0; i_3 < wallets.length; i_3++) {
+            //     var coinSymbol_1 = wallets[i_3].Currency;
+            //     walletTotal_1 += newCoinPrices_1[coinSymbol_1] * wallets[i_3].Amount;
+            //     console.log(walletTotal_1);
+            // }
+            // dispatch({ type: WALLET_COINMARKETCAP_API_FETCH_SUCCESS, payload: { newCoinPrices, walletTotal } });
+        }  
     }
     
 }
 
 export const getWalletBalance = (publicKey) => {
-    return (dispatch) => {
-        return axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance').then(function(response) {
+    return async (dispatch) => {
+        try {
+            const response = await axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance');
             //get amount value from blockexplorer
-            var amount = response.data
-            dispatch({ type: GET_WALLET_BALANCE, payload: response.data})
-
-        }).catch( function (error) {
-            console.log("unable to get balance for " + publicKey)
-            console.log(publicKey)
-            console.log(error)
-        })
+            var amount = response.data;
+            dispatch({ type: GET_WALLET_BALANCE, payload: response.data });
+        }
+        catch (error) {
+            console.log("unable to get balance for " + publicKey);
+            dispatch({ type: GET_WALLET_BALANCE_FAIL, payload:{}});
+        }
     }
 }
 

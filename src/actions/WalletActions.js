@@ -31,10 +31,8 @@ import axios from 'axios'
 export const walletInit = () => {
     //Generate all wallet public and private keys
     return async (dispatch) => {
-       
-        // const mnemonic = bip39.generateMnemonic(256)
+
         const mnemonic = bip39.generateMnemonic(128)
-        console.log(mnemonic)
         const seed = bip39.mnemonicToSeed(mnemonic)
           
         const master = bitcoin.HDNode.fromSeedBuffer(seed, bitcoin.networks.bitcoin);
@@ -42,9 +40,8 @@ export const walletInit = () => {
         const publicKey = derived.getAddress();
         const privateKey = derived.keyPair.toWIF();
 
-        //Get coin value amounts
+        //Get coin value amounts from blockexplorer
         try {
-            //get amount value from blockexplorer
             const response = await axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance');
             var amount = response.data;
             dispatch({ type: WALLET_INIT, payload: { mnemonic, privateKey, publicKey, amount } });
@@ -55,7 +52,6 @@ export const walletInit = () => {
             dispatch({ type: WALLET_INIT, payload: { mnemonic, privateKey, publicKey, amount } });
         }
     }
-    //return a seed, wif, derived, to the payload an
 }
 
 export const ETHWalletInit = () => {
@@ -84,11 +80,7 @@ export const walletFetch = (wallets) => {
             dispatch({ type: WALLET_COINMARKETCAP_API_FETCH_SUCCESS, payload: { newCoinPrices, walletTotal } });
         }
         catch (error) {
-            // //Get Coin prices from coinmarketcap
-            /*
-            ****JUST DEVELOPMENT
-            //use defaultWallet Value instead for testing and not connected to internet
-            */
+            //Return the old values if the coinmarketcap api can't be reached
             dispatch({ type: WALLET_FETCH_NETWORK_ERROR, payload: {} });
         }  
     }
@@ -98,13 +90,14 @@ export const walletFetch = (wallets) => {
 export const getWalletBalance = (publicKey) => {
     return async (dispatch) => {
         try {
-            const response = await axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance');
             //get amount value from blockexplorer
+            const response = await axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance');
             var amount = response.data;
             dispatch({ type: GET_WALLET_BALANCE, payload: response.data });
         }
         catch (error) {
-            console.log("unable to get balance for " + publicKey);
+            //Don't update balance
+            console.log("unable to update balance ");
             dispatch({ type: GET_WALLET_BALANCE_FAIL, payload:{}});
         }
     }

@@ -56,15 +56,13 @@ const INITIAL_STATE = {
 export default (state= INITIAL_STATE, action) => {
     switch(action.type) {
         case WALLET_INIT:
+            //TODO: Update to differentiate between coins
             wallets = state.wallets
             for (i=0; i< 4; i++) {
                 wallets[i].privateKey = action.payload.privateKey
                 wallets[i].publicKey = action.payload.publicKey
                 wallets[i].amount = action.payload.amount
             }
-            // wallets[0].privateKey = action.payload.bitcoin.privateKey
-            // wallets[0].publicKey = action.payload.bitcoin.publicKey
-            // wallets[0].amount = action.payload.bitcoin.amount
             return {...state, wallets: wallets, isInitialized: true}
         case GET_WALLET_BALANCE: 
             wallets = state.wallets
@@ -80,7 +78,6 @@ export default (state= INITIAL_STATE, action) => {
         case WALLET_COINMARKETCAP_API_FETCH_SUCCESS:
             return {
                 ...state, 
-                // wallets: action.payload.wallets,
                 newCoinPrices: action.payload.newCoinPrices, 
                 walletTotal: action.payload.walletTotal, 
                 loading: false 

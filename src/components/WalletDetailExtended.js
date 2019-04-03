@@ -34,10 +34,10 @@ class  WalletDetailExtended extends Component  {
 
     render () {
         const {priceView} = this.props
-        const { Name, Amount, Currency, Id, publicKey } = this.props.wallet;
+        const { name, currency, publicKey } = this.props.wallet;
         console.log(this.props.wallet)
-        const {cardStyle, headerContentStyle, headerTextStyle, 
-            thumbnail_style, imageStyle, thumbnailContainerStyle,
+        const { headerContentStyle, headerTextStyle, 
+            thumbnail_style, thumbnailContainerStyle,
             amountContentStyle, screenStyle, qrcodeStyle,footerStyle} = styles;
 
         return ( 
@@ -47,14 +47,14 @@ class  WalletDetailExtended extends Component  {
                     <View style={{marginBottom: -3}}>
                     <CardSection > 
                         <View style={thumbnailContainerStyle}>
-                            <Image style={thumbnail_style} source={{ uri : GetCoinImage(Currency)}}/>
+                            <Image style={thumbnail_style} source={{ uri : GetCoinImage(currency)}}/>
                         </View>
                         <View style={headerContentStyle}>
-                            <Text style={headerTextStyle}> {Name} </Text>
+                            <Text style={headerTextStyle}> {name} </Text>
                         </View>
                         <TouchableOpacity onPress={() => this.onWalletPress()}>
                             <View style={amountContentStyle}>
-                            {shownCardValue(priceView[Currency], this.props)}
+                            {shownCardValue(priceView[currency], this.props)}
                             </View>
                         </TouchableOpacity>
                     </CardSection>
@@ -173,7 +173,7 @@ class  WalletDetailExtended extends Component  {
 }
 
 const mapStateToProps = (state, ownProps) => {
-    const expanded = state.wallet.selectedWalletId === ownProps.wallet.Currency;
+    const expanded = state.wallet.selectedWalletId === ownProps.wallet.currency;
     const {priceView} = state.wallet
     console.log(priceView)
     return  {priceView, expanded}

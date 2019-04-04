@@ -6,8 +6,6 @@ export const WALLET_VIEW_CHANGED = 'wallet_view_changed';
 
 export const SELECT_WALLET_CHART = 'select_wallet_chart';
 export const WALLET_SCROLL_ENABLED = 'wallet_scroll_enabled';
-export const WALLET_BUY = 'wallet_buy';
-export const WALLET_SELL = 'wallet_sell';
 
 export const WALLET_INIT = 'wallet_init';
 export const GET_WALLET_BALANCE = 'get_wallet_balance'

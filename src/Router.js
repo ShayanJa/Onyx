@@ -3,7 +3,7 @@ import { Scene, Router } from 'react-native-router-flux';
 import WalletList from './components/WalletList.js'
 import AppLogo from './components/headers/AppLogo.js'
 import WalletDetailExtended from './components/WalletDetailExtended'
-// import ScanScreen from './components/ScanScreen.js';
+import ScanScreen from './components/ScanScreen.js';
 import SendScreen from './components/SendScreen'
 
 
@@ -21,14 +21,14 @@ const RouterComponent = () => {
                     key="walletList" component={WalletList}            
                     renderTitle={() => <AppLogo/>} 
                     initial />
-                {/* <Scene
-                    key="qrcodeScanner"
-                    component={ScanScreen}
-                /> */}
                 <Scene
                     key="qrcodeScanner"
-                    component={SendScreen}
+                    component={ScanScreen}
                 />
+                {/* <Scene
+                    key="qrcodeScanner"
+                    component={SendScreen}
+                /> */}
             </Scene>
         </Router>
     );

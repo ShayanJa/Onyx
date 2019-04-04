@@ -1,14 +1,10 @@
-import { Actions } from 'react-native-router-flux'
 import {
-    WALLET_FETCH_SUCCESS,
     WALLET_COINMARKETCAP_API_FETCH_SUCCESS,
     WALLET_FETCH_NETWORK_ERROR,
     WALLET_FETCH,
     WALLET_VIEW_CHANGED,
     SELECT_WALLET_CHART,
     WALLET_SCROLL_ENABLED,
-    WALLET_BUY,
-    WALLET_SELL,
     WALLET_INIT,
     GET_WALLET_BALANCE,
     GET_WALLET_BALANCE_FAIL
@@ -86,8 +82,6 @@ export const getWalletBalance = (publicKey) => {
         try {
             //get amount value from blockexplorer
             const response = await axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance');
-            console.log(publicKey)
-            var amount = response.data;
             dispatch({ type: GET_WALLET_BALANCE, payload: response.data });
         }
         catch (error) {

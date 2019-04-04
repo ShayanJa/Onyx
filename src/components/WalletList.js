@@ -5,7 +5,6 @@ import _ from 'lodash';
 import { walletFetch, walletInit } from '../actions';
 import {WeiToEther} from '../Util.js';
 import {Spinner} from './common'
-
 import { connect } from 'react-redux';
 
 

@@ -4,9 +4,6 @@ import { Card, CardSection, Button } from './common';
 import {WeiToEther, GetCoinImage} from '../Util.js'
 import { walletViewChanged, selectWalletChart } from '../actions';
 import { connect } from 'react-redux';
-import CoinChart from './CoinChart'
-import ExtrasExample from './ExtraSample.js'
-import {Actions} from 'react-native-router-flux'
 import QRCode from 'react-native-qrcode-svg';
 // import QRCodeScanner from 'react-native-qrcode-scanner';
 import PopupDialog, { SlideAnimation } from 'react-native-popup-dialog';
@@ -19,8 +16,8 @@ class  WalletDetailExtended extends Component  {
     }
     onWalletPress () {
         const {wallet} = this.props
-        this.props.walletViewChanged(wallet.Currency)
-        this.props.selectWalletChart(wallet.Currency)
+        this.props.walletViewChanged(wallet.currency)
+        this.props.selectWalletChart(wallet.currency)
     }
 
     onReceivePress() {
@@ -62,18 +59,9 @@ class  WalletDetailExtended extends Component  {
                     <View>
                        
                     </View>
-                    <View className='row'>
-                        {/* {this.renderDescription()} */}
-                         {/* <InfoBox data={this.props.bpi} /> */}
-                    </View>
+
                 </Card>
                 </View>
-                <View>
-                {/* {this.renderDescription()} */}
-                {console.log("walletpress")}
-                </View>
-                {/* <CoinChart /> */}
-                {   /* < ExtrasExample/> */}
                 <View>
                 <View style={qrcodeStyle}>
                 <QRCode
@@ -115,46 +103,24 @@ class  WalletDetailExtended extends Component  {
                             borderColor={'#00dcff'}
                             // this is used to set backgroundColor of label mask.
                             // please pass the backgroundColor of your TextInput container.
-                            // backgroundColor={'#F9F7F6'}
                             backgroundColor={'#FFFFFF'}
                         />
                         <Hoshi
                             label={'amount'}
                             // this is used as active border color
-                            // borderColor={'#b76c94'}
                             borderColor={'#00dcff'}
                             // this is used to set backgroundColor of label mask.
                             // please pass the backgroundColor of your TextInput container.
-                                // backgroundColor={'#F9F7F6'}
                             backgroundColor={'#FFFFFF'}
                         />
                     </View>
                 </PopupDialog>
                 <PopupDialog
-                        ref={(popupDialogRecieve) => { this.popupDialogRecieve = popupDialogRecieve; }}
-                        dialogAnimation={slideAnimation}
+                    ref={(popupDialogRecieve) => { this.popupDialogRecieve = popupDialogRecieve; }}
+                    dialogAnimation={slideAnimation}
                 >
-                    <View>
-                        {/* <Hoshi
-                            label={'address'}
-                            // this is used as active border color
-                            borderColor={'#00dcff'}
-                            // this is used to set backgroundColor of label mask.
-                            // please pass the backgroundColor of your TextInput container.
-                            // backgroundColor={'#F9F7F6'}
-                            backgroundColor={'#FFFFFF'}
-                        />
-                        <Hoshi
-                            label={'amount'}
-                            // this is used as active border color
-                            // borderColor={'#b76c94'}
-                            borderColor={'#00dcff'}
-                            // this is used to set backgroundColor of label mask.
-                            // please pass the backgroundColor of your TextInput container.
-                                // backgroundColor={'#F9F7F6'}
-                            backgroundColor={'#FFFFFF'} */}
-                        {/* /> */}
-                        <QRCode
+                <View>
+                <QRCode
                     value={'43'}
                     // logo={{uri: base64Logo}}
                     size={250}
@@ -181,19 +147,11 @@ const mapStateToProps = (state, ownProps) => {
 
 export default connect(mapStateToProps, {walletViewChanged, selectWalletChart})(WalletDetailExtended);
 
-
-// const mapStateToProps = (state, ownProps) => {
-//     return ownProps
-// };
-
-// export default connect(mapStateToProps, {walletViewChanged, selectWalletChart})(WalletDetailExtended);
-
 const styles = {
     screenStyle: {
         marginTop: 20
     },
     qrcodeStyle: {
-        // flex: 1, //what does it mean
         marginTop: 20,
         marginLeft:20,
         marginRight:20,
@@ -201,9 +159,7 @@ const styles = {
         alignItems: 'center',
     },
     headerContentStyle: {
-        // flexDirection: 'column',
-        // justifyContent: 'space-around'
-        flex: 1, //what does it mean
+        flex: 1, 
         justifyContent: 'center',
     },
     headerTextStyle: {
@@ -227,22 +183,20 @@ const styles = {
         width: null,
     },
     amountContentStyle: {
-        flex: 1, //what does it mean
+        flex: 1,
         justifyContent: 'center',
-        color:  "#000000"
     },
     footerStyle: {
         position:"absolute",
         bottom:0,
-        // width:100,
-        height:60,   /* Height of the footer */
+        height:60,  
         background:"#6cf",
     },
     centerText: {
         flex: 1,
         fontSize: 18,
         padding: 32,
-        color: '#777',
+        colorText: '#777',
     },
     textBold: {
         fontWeight: '500',
@@ -258,17 +212,17 @@ const styles = {
 }
 
 shownCardValue  = (valueView, ownProps) => {
-    const {coinPrices, priceView} = ownProps
-    const { Name, Amount, Currency } = ownProps.wallet;
-    switch(valueView) {
+    const { coinPrices } = ownProps
+    const { amount, currency } = ownProps.wallet;
+    switch( valueView ) {
         case 0:
-            return  (<Text> {WeiToEther(Amount) + " " + Currency} </Text>);
+            return  (<Text> {WeiToEther(amount) + " " + currency} </Text>);
         case 1:
-            return (<Text> {"$" + (WeiToEther(Amount)*coinPrices["ETH"]).toFixed(2)} </Text>)
+            return (<Text> {"$" + (WeiToEther(amount)*coinPrices["ETH"]).toFixed(2)} </Text>)
         case 2:
-            return (<Text> {"$" + coinPrices[Currency]} </Text>);
+            return (<Text> {"$" + coinPrices[currency]} </Text>);
         default:
-            return  (<Text> {(WeiToEther(Amount)) + " " + Currency} </Text>);
+            return  (<Text> {(WeiToEther(amount)) + " " + currency} </Text>);
     }
 }
 

@@ -20,35 +20,11 @@ const INITIAL_STATE = {
         amount: 0,
         privateKey: null,
         publicKey: null,
-    },
-    {
-        name: "ETH Wallet",
-        currency:"ETH",
-        amount: 0,
-        privateKey: null,
-        publicKey: null,
-    },
-    {
-        name: "LTC Wallet",
-        currency:"LTC",
-        amount: 0,
-        privateKey: null,
-        publicKey: null,
-    },
-    {
-        name: "Ripple Wallet",
-        currency:"XRP",
-        amount: 0,
-        privateKey: null,
-        publicKey: null,
-    },],
+    }],
     walletTotal: 0,
     loading: false,
     priceView: {
         "BTC": 0,
-        "ETH": 0,
-        "LTC": 0,
-        "XRP": 0,
     },
     isInitialized: false,
 }
@@ -58,11 +34,9 @@ export default (state= INITIAL_STATE, action) => {
         case WALLET_INIT:
             //TODO: Update to differentiate between coins
             wallets = state.wallets
-            for (i=0; i< 4; i++) {
-                wallets[i].privateKey = action.payload.privateKey
-                wallets[i].publicKey = action.payload.publicKey
-                wallets[i].amount = action.payload.amount
-            }
+            wallets[0].privateKey = action.payload.privateKey
+            wallets[0].publicKey = action.payload.publicKey
+            wallets[0].amount = action.payload.amount
             return {...state, wallets: wallets, isInitialized: true}
         case GET_WALLET_BALANCE: 
             wallets = state.wallets

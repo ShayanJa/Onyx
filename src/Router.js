@@ -2,10 +2,11 @@ import React from 'react';
 import { Scene, Router } from 'react-native-router-flux';
 import WalletList from './components/WalletList.js'
 import AppLogo from './components/headers/AppLogo.js'
-import CoinChart from './components/CoinChart'
 import WalletDetailExtended from './components/WalletDetailExtended'
 // import ScanScreen from './components/ScanScreen.js';
 import SendScreen from './components/SendScreen'
+
+
 const RouterComponent = () => {
     return (
         <Router navigationBarStyle={styles.navBarStyles}>

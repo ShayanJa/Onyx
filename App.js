@@ -12,10 +12,6 @@ import {SQLite} from 'react-native-sqlite-storage';
 import { purgeStoredState } from 'redux-persist'
 
 export default class App extends React.Component {
-  state = { loggedIn: null };
-
-  componentWillMount() { 
-  }
 
   render() {
     const persistConfig = {
@@ -34,7 +30,7 @@ export default class App extends React.Component {
       {
         storage: SQLite,
       })
-    // persistor.purge()
+    // persistor.purge() //purge persisted state
     return (
       <Provider  store ={store}>
         <PersistGate loading={null} persistor={persistor}>

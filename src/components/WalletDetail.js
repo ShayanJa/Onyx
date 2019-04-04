@@ -4,7 +4,6 @@ import { Card, CardSection, Button } from './common';
 import {WeiToEther, GetCoinImage} from '../Util.js'
 import { walletViewChanged, selectWalletChart, getWalletBalance } from '../actions';
 import { connect } from 'react-redux';
-import CoinChart from './CoinChart'
 import WalletDetailExtended from './WalletDetailExtended.js'
 import {Actions} from 'react-native-router-flux'
 
@@ -23,7 +22,7 @@ class  WalletDetail extends Component  {
     }
     
     render () {
-        const { name, currency, Id } = this.props.wallet;
+        const { name, currency } = this.props.wallet;
         const {cardStyle, headerContentStyle, headerTextStyle, 
             thumbnail_style, imageStyle, thumbnailContainerStyle,
             amountContentStyle} = styles;
@@ -49,7 +48,6 @@ class  WalletDetail extends Component  {
                         </CardSection>
                         </View>
                         <View>
-                            
                         </View>
                         <View className='row'>
                             {/* {this.renderDescription()} */}
@@ -59,23 +57,17 @@ class  WalletDetail extends Component  {
                 </View>
             </TouchableOpacity >
             </View>
-            )
-        }
-        
-    // }
+        )
+    }
 }
 
 const styles = {
     headerContentStyle: {
-        // flexDirection: 'column',
-        // justifyContent: 'space-around'
-        flex: 1, //what does it mean
+        flex: 1,
         justifyContent: 'center',
     },
     headerTextStyle: {
         fontSize: 18,
-        // color: '#00dcff'
-        // color: '#000000'
         color:  "#131111"
         
     },
@@ -96,18 +88,14 @@ const styles = {
         width: null,
     },
     amountContentStyle: {
-        flex: 1, //what does it mean
+        flex: 1,
         justifyContent: 'center',
-        // color: '#00dcff'
-        color:  "#1f0c0f",
-        // color: '#000000'
     }
 }
 
 const mapStateToProps = (state, ownProps) => {
     const expanded = state.wallet.selectedWalletId === ownProps.wallet.currency;
     const {priceView} = state.wallet
-    console.log(priceView)
     return  {priceView, expanded}
 };
 

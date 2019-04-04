@@ -19,7 +19,6 @@ const styles = {
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 10,
-    color: '#111111',
     backgroundColor: '#e6ffff',
   }
 };

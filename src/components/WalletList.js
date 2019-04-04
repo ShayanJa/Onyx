@@ -61,6 +61,7 @@ class WalletList extends Component {
                     <View style={styles.amountContainerStyle}>
                         <Text style={styles.amountStyle}>Total {"$ " + WeiToEther(this.props.walletTotal).toFixed(2)}</Text>
                     </View>
+
                 </View>
             )
         }
@@ -78,26 +79,22 @@ const styles = {
     },
     amountStyle : {
         fontSize: 18,
-        color: "#00dcff"
     },
     amountContainerStyle: {
         alignItems: 'center',
         marginTop: 20,
-        color: "#00dcff"
     },
     tabStyle: { 
         marginBottom: 10,
         borderRadius: 4,
         marginRight:5,
         marginLeft:5,
-        color: "#00dcff"
     }
 };
 
 const mapStateToProps = ({wallet}) => {
     const {wallets, newCoinPrices, walletTotal, loading, isInitialized} = wallet
     console.log(wallets)
-    console.log('hey')
     return  {wallets, newCoinPrices, walletTotal, loading, isInitialized}
 };
 

@@ -5,8 +5,6 @@ import {WeiToEther, GetCoinImage} from '../Util.js'
 import { walletViewChanged, selectWalletChart } from '../actions';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
-import { Actions } from 'react-native-router-flux';
-// import QRCodeScanner from 'react-native-qrcode-scanner';
 import PopupDialog, { SlideAnimation } from 'react-native-popup-dialog';
 import { Hoshi } from 'react-native-textinput-effects';
 
@@ -23,10 +21,6 @@ class  WalletDetailExtended extends Component  {
 
     onReceivePress() {
         
-    }
-
-    onSendPress() {
-        Actions.qrcodeScanner()
     }
 
     render () {
@@ -65,7 +59,7 @@ class  WalletDetailExtended extends Component  {
                 <View>
                 <View style={qrcodeStyle}>
                 <QRCode
-                    value={'43'}
+                    value={publicKey}
                     // logo={{uri: base64Logo}}
                     size={250}
                     logoSize={30}
@@ -76,15 +70,12 @@ class  WalletDetailExtended extends Component  {
                     <Text>{publicKey}</Text>
                 </View>
                 <CardSection style={footerStyle}>
-                    {/* <Button onPress={() => {
+                    <Button onPress={() => {
                         this.popupDialog.show();
                         }}>
                         Send 
-                    </Button> */}
-                    
-                    <Button onPress={() => this.onSendPress()}>
-                    Send 
                     </Button>
+                    
                     <Button onPress={() => {
                         this.popupDialogRecieve.show();
                         }}>
@@ -116,18 +107,18 @@ class  WalletDetailExtended extends Component  {
                     </View>
                 </PopupDialog>
                 <PopupDialog
+                    height={1000}
                     ref={(popupDialogRecieve) => { this.popupDialogRecieve = popupDialogRecieve; }}
                     dialogAnimation={slideAnimation}
                 >
-                <View>
+                <View style={styles.bigqrcodeStyle}>
                 <QRCode
-                    value={'43'}
-                    // logo={{uri: base64Logo}}
-                    size={250}
+                    value={publicKey}
+                    size={400}
                     logoSize={30}
                     logoBackgroundColor='transparent'
                 />
-                    </View>
+                </View>
                 </PopupDialog>
                 
                 </View>
@@ -153,6 +144,13 @@ const styles = {
     },
     qrcodeStyle: {
         marginTop: 20,
+        marginLeft:20,
+        marginRight:20,
+        marginBottom: 20,
+        alignItems: 'center',
+    },
+    bigqrcodeStyle: {
+        marginTop: 100,
         marginLeft:20,
         marginRight:20,
         marginBottom: 20,

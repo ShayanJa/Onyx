@@ -11,7 +11,6 @@ import {
 } from './types'
 
 // import blockexplorer from 'blockchain.info/blockexplorer'
-// import '../shim' // make sure to use es6 import and not require()
 import bitcoin from 'react-native-bitcoinjs-lib'
 import bip39 from 'bip39'
 
@@ -85,7 +84,7 @@ export const getWalletBalance = (publicKey) => {
             dispatch({ type: GET_WALLET_BALANCE, payload: response.data });
         }
         catch (error) {
-            //Don't update balance
+            //Returns old balance and Doen't update the balance
             console.log("unable to update balance ");
             dispatch({ type: GET_WALLET_BALANCE_FAIL});
         }

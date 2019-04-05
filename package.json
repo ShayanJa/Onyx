@@ -5,7 +5,7 @@
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
     "test": "jest",
-    "postinstall": "./node_modules/.bin/rn-nodeify --install buffer,events,process,stream,util,inherits,fs,path --hack"
+    "postinstall": "./scripts/postinstall.sh"
   },
   "dependencies": {
     "@tradle/react-native-http": "2.0.1",

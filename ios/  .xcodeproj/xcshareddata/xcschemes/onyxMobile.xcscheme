@@ -73,7 +73,7 @@
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "onyxMobile.app"
             BlueprintName = "onyxMobile"
-            ReferencedContainer = "container:onyxMobile.xcodeproj">
+            ReferencedContainer = "container:  .xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -96,7 +96,7 @@
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
             BuildableName = "onyxMobile.app"
             BlueprintName = "onyxMobile"
-            ReferencedContainer = "container:onyxMobile.xcodeproj">
+            ReferencedContainer = "container:  .xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>

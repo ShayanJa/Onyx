@@ -12,7 +12,7 @@ import {
 
 // import blockexplorer from 'blockchain.info/blockexplorer'
 import bitcoin from 'react-native-bitcoinjs-lib'
-import bip39 from 'bip39'
+import bip39 from 'react-native-bip39'
 
 import axios from 'axios'
 
@@ -20,25 +20,27 @@ import axios from 'axios'
 export const walletInit = () => {
     //Generate all wallet public and private keys
     return async (dispatch) => {
-
-        const mnemonic = bip39.generateMnemonic(128)
-        const seed = bip39.mnemonicToSeed(mnemonic)
-          
-        const master = bitcoin.HDNode.fromSeedBuffer(seed, bitcoin.networks.bitcoin);
-        const derived = master.derivePath("m/44'/0'/0'/0/0");
-        const publicKey = derived.getAddress();
-        const privateKey = derived.keyPair.toWIF();
-
-        //Get coin value amounts from blockexplorer
         try {
-            const response = await axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance');
-            var amount = response.data;
-            dispatch({ type: WALLET_INIT, payload: { mnemonic, privateKey, publicKey, amount } });
-        }
-        catch (error) {
-            console.log(error);
-            amount = 0
-            dispatch({ type: WALLET_INIT, payload: { mnemonic, privateKey, publicKey, amount } });
+            const mnemonic = await bip39.generateMnemonic() 
+            const seed = bip39.mnemonicToSeed(mnemonic)
+            const master = bitcoin.HDNode.fromSeedBuffer(seed, bitcoin.networks.bitcoin);
+            const derived = master.derivePath("m/44'/0'/0'/0/0");
+            const publicKey = derived.getAddress();
+            const privateKey = derived.keyPair.toWIF();
+            try {
+                //Get coin value amounts from blockexplorer
+                const response = await axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance');
+                var amount = response.data;
+                dispatch({ type: WALLET_INIT, payload: { mnemonic, privateKey, publicKey, amount } });
+            }
+            catch (error) {
+                console.log(error);
+                amount = 0
+                dispatch({ type: WALLET_INIT, payload: { mnemonic, privateKey, publicKey, amount } });
+            }
+        }  
+        catch {
+            //TODO 'if mnemonic fails'
         }
     }
 }

@@ -1,18 +1,24 @@
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableOpacity, LayoutAnimation } from 'react-native';
+import { Text, View, Image, TouchableOpacity, Clipboard } from 'react-native';
 import { Card, CardSection, Button } from './common';
 import {WeiToEther, GetCoinImage} from '../Util.js'
 import { walletViewChanged, selectWalletChart } from '../actions';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
-import PopupDialog, { SlideAnimation } from 'react-native-popup-dialog';
+import Dialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
 import { Hoshi } from 'react-native-textinput-effects';
 
 class  WalletDetailExtended extends Component  {
     constructor(props) {
         super(props);
-
+        this.state = {
+            sendVisible: false,
+            recieveVisible: false,
+            copytext: "",
+        }
+        this.onSendPress = this.onSendPress.bind(this)
     }
+
     onWalletPress () {
         const {wallet} = this.props
         this.props.walletViewChanged(wallet.currency)
@@ -20,8 +26,17 @@ class  WalletDetailExtended extends Component  {
     }
 
     onReceivePress() {
-        
+        this.setState({receiveVisible: true})
     }
+
+    onSendPress() {
+        this.setState({sendVisible: true})
+    }
+
+    writeToClipboard = async () => {
+        await Clipboard.setString(this.props.wallet.publicKey);
+        alert("Copied!");
+    };
 
     render () {
         const {priceView} = this.props
@@ -29,104 +44,126 @@ class  WalletDetailExtended extends Component  {
         console.log(this.props.wallet)
         const { headerContentStyle, headerTextStyle, 
             thumbnail_style, thumbnailContainerStyle,
-            amountContentStyle, screenStyle, qrcodeStyle,footerStyle} = styles;
-
+            amountContentStyle, screenStyle, qrcodeStyle, bigqrcodeStyle, footerStyle} = styles;
         return ( 
             <View style={screenStyle}>
                 <View >
                 <Card>
                     <View style={{marginBottom: -3}}>
-                    <CardSection > 
-                        <View style={thumbnailContainerStyle}>
-                            <Image style={thumbnail_style} source={{ uri : GetCoinImage(currency)}}/>
-                        </View>
-                        <View style={headerContentStyle}>
-                            <Text style={headerTextStyle}> {name} </Text>
-                        </View>
-                        <TouchableOpacity onPress={() => this.onWalletPress()}>
-                            <View style={amountContentStyle}>
-                            {shownCardValue(priceView[currency], this.props)}
+                        <CardSection > 
+                            <View style={thumbnailContainerStyle}>
+                                <Image style={thumbnail_style} source={{ uri : GetCoinImage(currency)}}/>
                             </View>
-                        </TouchableOpacity>
-                    </CardSection>
+                            <View style={headerContentStyle}>
+                                <Text style={headerTextStyle}> {name} </Text>
+                            </View>
+                            <TouchableOpacity onPress={() => this.onWalletPress()}>
+                                <View style={amountContentStyle}>
+                                {shownCardValue(priceView[currency], this.props)}
+                                </View>
+                            </TouchableOpacity>
+                        </CardSection>
                     </View>
-                    <View>
-                       
-                    </View>
-
                 </Card>
                 </View>
                 <View>
                 <View style={qrcodeStyle}>
                 <QRCode
                     value={publicKey}
-                    // logo={{uri: base64Logo}}
                     size={250}
                     logoSize={30}
                     logoBackgroundColor='transparent'
                 />
                 </View>
                 <View>
-                    <Text>{publicKey}</Text>
+                    <Text onPress={this.writeToClipboard}>{publicKey}</Text>
                 </View>
                 <CardSection style={footerStyle}>
                     <Button onPress={() => {
-                        this.popupDialog.show();
+                        this.onSendPress();
                         }}>
                         Send 
                     </Button>
                     
                     <Button onPress={() => {
-                        this.popupDialogRecieve.show();
+                        this.onReceivePress()
                         }}>
                         Recieve 
                     </Button>
                 </CardSection>
-                
-                <PopupDialog
-                        ref={(popupDialog) => { this.popupDialog = popupDialog; }}
-                        dialogAnimation={slideAnimation}
+                <View style={styles.sendPopup}>
+                <Dialog
+                    width={1}
+                    height={300}
+                    rounded
+                    visible={this.state.sendVisible}
+                    dialogStyle={styles.sendPopup}
+                    onDismiss={() => {
+                        this.setState({ sendVisible: false });
+                    }}
+                    onTouchOutside={() => {
+                        this.setState({ sendVisible: false });
+                    }}
+                    dialogTitle={
+                        <DialogTitle
+                          title="Send"
+                          hasTitleBar={false}
+                          textStyle={{ color: '#11f' }}
+                        />
+                    }
+                    dialogAnimation={new SlideAnimation({
+                    slideFrom: 'bottom',
+                    })}
                 >
                     <View>
                         <Hoshi
                             label={'address'}
-                            // this is used as active border color
                             borderColor={'#00dcff'}
-                            // this is used to set backgroundColor of label mask.
-                            // please pass the backgroundColor of your TextInput container.
                             backgroundColor={'#FFFFFF'}
                         />
+                        <Image source={"../assets/onyx.png"}/>
                         <Hoshi
                             label={'amount'}
-                            // this is used as active border color
                             borderColor={'#00dcff'}
-                            // this is used to set backgroundColor of label mask.
-                            // please pass the backgroundColor of your TextInput container.
                             backgroundColor={'#FFFFFF'}
                         />
                     </View>
-                </PopupDialog>
-                <PopupDialog
-                    height={1000}
-                    ref={(popupDialogRecieve) => { this.popupDialogRecieve = popupDialogRecieve; }}
-                    dialogAnimation={slideAnimation}
+                </Dialog>
+                </View>
+                <Dialog
+                    width={1}
+                    rounded
+                    visible={this.state.receiveVisible}
+                    onDismiss={() => {
+                        this.setState({ receiveVisible: false });
+                    }}
+                    onTouchOutside={() => {
+                        this.setState({ receiveVisible: false });
+                    }}
+                    dialogTitle={
+                        <DialogTitle
+                          title="Receive"
+                          hasTitleBar={false}
+                          textStyle={{ color: '#11f' }}
+                        />
+                      }
+                    dialogAnimation={new SlideAnimation({
+                    slideFrom: 'bottom',
+                    })}
                 >
                 <View style={styles.bigqrcodeStyle}>
-                <QRCode
-                    value={publicKey}
-                    size={400}
-                    logoSize={30}
-                    logoBackgroundColor='transparent'
-                />
+                    <QRCode
+                        value={publicKey}
+                        size={300}
+                        logoSize={30}
+                        logoBackgroundColor='transparent'
+                    />
                 </View>
-                </PopupDialog>
-                
-                </View>
+                </Dialog>
+            </View>
         </View>
-
         )
     }
-
 }
 
 const mapStateToProps = (state, ownProps) => {
@@ -150,7 +187,7 @@ const styles = {
         alignItems: 'center',
     },
     bigqrcodeStyle: {
-        marginTop: 100,
+        marginTop: 30,
         marginLeft:20,
         marginRight:20,
         marginBottom: 20,
@@ -207,6 +244,9 @@ const styles = {
     buttonTouchable: {
         padding: 16,
     },
+    sendPopup: {
+        marginTop: 550,
+    }
 }
 
 shownCardValue  = (valueView, ownProps) => {
@@ -223,9 +263,3 @@ shownCardValue  = (valueView, ownProps) => {
             return  (<Text> {(WeiToEther(amount)) + " " + currency} </Text>);
     }
 }
-
-
-const slideAnimation = new SlideAnimation({
-    slideFrom: 'bottom',
-  });
-  

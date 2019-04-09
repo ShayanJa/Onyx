@@ -1,22 +1,34 @@
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableOpacity, Clipboard } from 'react-native';
+import { Text, View, Image, TouchableOpacity, KeyboardAvoidingView, TouchableHighlight, Clipboard } from 'react-native';
 import { Card, CardSection, Button } from './common';
 import {WeiToEther, GetCoinImage} from '../Util.js'
-import { walletViewChanged, selectWalletChart } from '../actions';
+import { walletViewChanged, selectWalletChart, scanQRcode } from '../actions';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
 import Dialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
 import { Hoshi } from 'react-native-textinput-effects';
+import {Actions} from 'react-native-router-flux'
+import { relative } from 'path';
 
-class  WalletDetailExtended extends Component  {
+class WalletDetailExtended extends Component  {
     constructor(props) {
         super(props);
         this.state = {
             sendVisible: false,
-            recieveVisible: false,
+            receiveVisible: false,
             copytext: "",
+            qrcodeValue: "",
         }
         this.onSendPress = this.onSendPress.bind(this)
+    }
+    componentWillMount() {
+        if (this.props.sendVisible != null) {
+            this.setState({ sendVisible: this.props.sendVisible}) 
+        }
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({qrcodeValue: nextProps.qrcodeValue, sendVisible: true}) 
     }
 
     onWalletPress () {
@@ -32,6 +44,10 @@ class  WalletDetailExtended extends Component  {
     onSendPress() {
         this.setState({sendVisible: true})
     }
+    onScanPress() {
+        this.setState({sendVisible: false})
+        Actions.qrcodeScanner(this.props)
+    }
 
     writeToClipboard = async () => {
         await Clipboard.setString(this.props.wallet.publicKey);
@@ -39,7 +55,7 @@ class  WalletDetailExtended extends Component  {
     };
 
     render () {
-        const {priceView} = this.props
+        const {priceView, qrcodeValue} = this.props
         const { name, currency, publicKey } = this.props.wallet;
         console.log(this.props.wallet)
         const { headerContentStyle, headerTextStyle, 
@@ -91,6 +107,9 @@ class  WalletDetailExtended extends Component  {
                         Recieve 
                     </Button>
                 </CardSection>
+                <KeyboardAvoidingView
+                    behavior="padding"
+                >
                 <View style={styles.sendPopup}>
                 <Dialog
                     width={1}
@@ -112,16 +131,19 @@ class  WalletDetailExtended extends Component  {
                         />
                     }
                     dialogAnimation={new SlideAnimation({
-                    slideFrom: 'bottom',
+                        slideFrom: 'bottom',
                     })}
                 >
                     <View>
                         <Hoshi
                             label={'address'}
+                            value={qrcodeValue}
                             borderColor={'#00dcff'}
                             backgroundColor={'#FFFFFF'}
                         />
-                        <Image source={"../assets/onyx.png"}/>
+                        <TouchableOpacity style={{position: relative, alignSelf: 'flex-end'}}onPress={() => this.onScanPress()}>
+                            <Image style={styles.imageStyle}source={require('../assets/photo-camera.png')} />
+                        </TouchableOpacity>
                         <Hoshi
                             label={'amount'}
                             borderColor={'#00dcff'}
@@ -130,6 +152,8 @@ class  WalletDetailExtended extends Component  {
                     </View>
                 </Dialog>
                 </View>
+                </KeyboardAvoidingView>
+
                 <Dialog
                     width={1}
                     rounded
@@ -148,7 +172,7 @@ class  WalletDetailExtended extends Component  {
                         />
                       }
                     dialogAnimation={new SlideAnimation({
-                    slideFrom: 'bottom',
+                        slideFrom: 'bottom',
                     })}
                 >
                 <View style={styles.bigqrcodeStyle}>
@@ -168,12 +192,11 @@ class  WalletDetailExtended extends Component  {
 
 const mapStateToProps = (state, ownProps) => {
     const expanded = state.wallet.selectedWalletId === ownProps.wallet.currency;
-    const {priceView} = state.wallet
-    console.log(priceView)
-    return  {priceView, expanded}
+    const {priceView, qrcodeValue} = state.wallet
+    return  {priceView, qrcodeValue,expanded}
 };
 
-export default connect(mapStateToProps, {walletViewChanged, selectWalletChart})(WalletDetailExtended);
+export default connect(mapStateToProps, {walletViewChanged, selectWalletChart, scanQRcode})(WalletDetailExtended);
 
 const styles = {
     screenStyle: {
@@ -212,10 +235,12 @@ const styles = {
         marginRight: 10
     },
     imageStyle: {
-        height: 50,
-        width: 20,
         flex: 1,
-        width: null,
+        marginTop:20,
+        marginRight: 10,
+        width: 40,
+        height: 40,
+        resizeMode: 'contain'
     },
     amountContentStyle: {
         flex: 1,

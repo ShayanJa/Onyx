@@ -9,9 +9,11 @@ import {
     WALLET_SCROLL_ENABLED,
     WALLET_INIT,
     GET_WALLET_BALANCE,
-    WALLET_FETCH_NETWORK_ERROR
+    WALLET_FETCH_NETWORK_ERROR,
+    SCAN_QR_CODE
 } from '../actions/types'
 import _ from 'lodash';
+
 const INITIAL_STATE = {
     wallets: [
     {
@@ -27,6 +29,7 @@ const INITIAL_STATE = {
         "BTC": 0,
     },
     isInitialized: false,
+    qrcodeVaue: '',
 }
 
 export default (state= INITIAL_STATE, action) => {
@@ -89,6 +92,12 @@ export default (state= INITIAL_STATE, action) => {
             return {
                 ...state,
                 walletScrollEnabled: action.payload
+            }
+        case SCAN_QR_CODE:
+            return {
+                ...state,
+                qrcodeValue: action.payload,
+                sendVisible: true,
             }
         default:
             return state;

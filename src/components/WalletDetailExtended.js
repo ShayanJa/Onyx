@@ -113,7 +113,7 @@ class WalletDetailExtended extends Component  {
                 <View style={styles.sendPopup}>
                 <Dialog
                     width={1}
-                    height={300}
+                    height={800}
                     rounded
                     visible={this.state.sendVisible}
                     dialogStyle={styles.sendPopup}

@@ -7,7 +7,8 @@ import {
     WALLET_SCROLL_ENABLED,
     WALLET_INIT,
     GET_WALLET_BALANCE,
-    GET_WALLET_BALANCE_FAIL
+    GET_WALLET_BALANCE_FAIL,
+    SCAN_QR_CODE,
 } from './types'
 
 // import blockexplorer from 'blockchain.info/blockexplorer'
@@ -112,6 +113,14 @@ export const setWalletScrollEnabled = (isEnabled) => {
     return {
         type: WALLET_SCROLL_ENABLED,
         payload: isEnabled
+    }
+}
+
+
+export const scanQRcode = (address) => {
+    return {
+        type: SCAN_QR_CODE,
+        payload: address
     }
 }
 

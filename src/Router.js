@@ -3,7 +3,7 @@ import { Scene, Router } from 'react-native-router-flux';
 import WalletList from './components/WalletList.js'
 import AppLogo from './components/headers/AppLogo.js'
 import WalletDetailExtended from './components/WalletDetailExtended'
-
+import ScanScreen from './components/ScanScreen.js'
 const RouterComponent = () => {
     return (
         <Router navigationBarStyle={styles.navBarStyles}>
@@ -18,6 +18,10 @@ const RouterComponent = () => {
                     key="walletList" component={WalletList}            
                     renderTitle={() => <AppLogo/>} 
                     initial />
+                <Scene
+                    key="qrcodeScanner"
+                    component={ScanScreen}
+                />
             </Scene>
         </Router>
     );

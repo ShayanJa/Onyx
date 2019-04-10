@@ -7,15 +7,12 @@ const AppLogo = () => {
 
     return (
     <View style={headerStyle}>
-        <Image
-          source={require('../../assets/onyx.png')}
+        <Image style={appLogoStyle}
+          source={require('../../assets/logo3.png')}
         />
     </View>
     );
 };
-
-
-
 
 const styles = {
     headerStyle: {
@@ -28,7 +25,7 @@ const styles = {
     appLogoStyle: {
         marginLeft: 0,
         width: 100, 
-        height: 27
+        height: 100
     },
     logoTextStyle: {
         justifyContent:'center',

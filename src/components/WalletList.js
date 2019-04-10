@@ -88,6 +88,7 @@ const styles = {
         borderRadius: 4,
         marginRight:5,
         marginLeft:5,
+        opacity: 10,
     }
 };
 

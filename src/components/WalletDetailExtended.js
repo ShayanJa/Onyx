@@ -27,10 +27,6 @@ class WalletDetailExtended extends Component  {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({qrcodeValue: nextProps.qrcodeValue, sendVisible: true}) 
-    }
-
     onWalletPress () {
         const {wallet} = this.props
         this.props.walletViewChanged(wallet.currency)

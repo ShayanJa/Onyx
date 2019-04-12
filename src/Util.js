@@ -3,6 +3,10 @@ export function WeiToEther (wei) {
 
 }
 
+export function SatoshiToBTC ( satoshi ) {
+    return satoshi / Math.pow(10,8)
+}
+
 
 export function GetCoinImage(coinName) {
     switch(coinName) {

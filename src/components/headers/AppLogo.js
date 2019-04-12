@@ -3,12 +3,12 @@ import {  View, Image, Text} from 'react-native';
 
 const AppLogo = () => {
 
-    const {appLogoStyle, logoTextStyle, headerStyle} = styles
+    const {appLogoStyle, headerStyle} = styles
 
     return (
     <View style={headerStyle}>
         <Image style={appLogoStyle}
-          source={require('../../assets/logo3.png')}
+          source={require('../../assets/logo.png')}
         />
     </View>
     );

@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import { Text, View, Image, TouchableOpacity, LayoutAnimation } from 'react-native';
 import { Card, CardSection, Button } from './common';
-import {WeiToEther, GetCoinImage} from '../Util.js'
+import {SatoshiToBTC, GetCoinImage} from '../Util.js'
 import { walletViewChanged, selectWalletChart, getWalletBalance } from '../actions';
 import { connect } from 'react-redux';
 import WalletDetailExtended from './WalletDetailExtended.js'
 import {Actions} from 'react-native-router-flux'
 
 
-class  WalletDetail extends Component  {
+class WalletDetail extends Component  {
 
     componentWillMount() {
         const {wallet} = this.props
+        console.log(wallet.publicKey)
         this.props.getWalletBalance(wallet.publicKey)
     }
 
@@ -35,7 +36,7 @@ class  WalletDetail extends Component  {
                         <View >
                         <CardSection > 
                             <View style={thumbnailContainerStyle}>
-                                <Image style={thumbnail_style} source={{ uri : GetCoinImage(currency)}}/>
+                                <Image style={thumbnail_style} source={require('../assets/btc.png')}/>
                             </View>
                             <View style={headerContentStyle}>
                                 <Text style={headerTextStyle}> {name} </Text>
@@ -107,13 +108,13 @@ shownCardValue  = (valueView, ownProps) => {
     const { currency, amount } = ownProps.wallet;
     switch(valueView) {
         case 0:
-            return  (<Text style={styles.amountContentStyle}> {WeiToEther(amount) + " " + currency} </Text>);
+            return  (<Text style={styles.amountContentStyle}> {SatoshiToBTC(amount) + " " + currency} </Text>);
         case 1:
-            return (<Text style={styles.amountContentStyle}> {"$" + (WeiToEther(amount)*coinPrices["ETH"]).toFixed(2)} </Text>)
+            return (<Text style={styles.amountContentStyle}> {"$" + (SatoshiToBTC(amount)*coinPrices["BTC"]).toFixed(2)} </Text>)
         case 2:
             return (<Text style={styles.amountContentStyle}> {"$" + coinPrices[currency]} </Text>);
         default:
-            return  (<Text style={styles.amountContentStyle}> {(WeiToEther(amount)) + " " + currency} </Text>);
+            return  (<Text style={styles.amountContentStyle}> {(SatoshiToBTC(amount)) + " " + currency} </Text>);
     }
 }
 

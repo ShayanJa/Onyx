@@ -1,14 +1,15 @@
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableOpacity, KeyboardAvoidingView, TouchableHighlight, Clipboard } from 'react-native';
+import { Text, View, Image, TouchableOpacity, KeyboardAvoidingView, ListView, Clipboard } from 'react-native';
 import { Card, CardSection, Button } from './common';
-import {WeiToEther, GetCoinImage} from '../Util.js'
-import { walletViewChanged, selectWalletChart, scanQRcode } from '../actions';
+import { WeiToEther } from '../Util.js'
+import { walletViewChanged, selectWalletChart, scanQRcode, getWalletTxs } from '../actions';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
 import Dialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
 import { Hoshi } from 'react-native-textinput-effects';
 import {Actions} from 'react-native-router-flux'
 import { relative } from 'path';
+import TxDetail from './TxDetail.js';
 
 class WalletDetailExtended extends Component  {
     constructor(props) {
@@ -18,13 +19,36 @@ class WalletDetailExtended extends Component  {
             receiveVisible: false,
             copytext: "",
             qrcodeValue: "",
+            dataSource: [] //create a dataSource
         }
+        this.renderRow = this.renderRow.bind(this)
         this.onSendPress = this.onSendPress.bind(this)
     }
+
     componentWillMount() {
         if (this.props.sendVisible != null) {
             this.setState({ sendVisible: this.props.sendVisible}) 
         }
+        this.props.getWalletTxs(this.props.wallet.publicKey);  
+        this.createDataSource(this.props)  
+    }
+
+    createDataSource({ txs }) {
+        const ds = new ListView.DataSource({
+            rowHasChanged: (r1, r2) => r1 !== r2
+        });
+        this.setState({dataSource: ds.cloneWithRows(txs)})
+    }
+
+    renderRow(tx) {
+        if ( tx.addr == this.props.wallet.publicKey ) {
+            return (
+                <View style={styles.tabStyle}>
+                    <TxDetail key={tx.n} tx={tx}/> 
+                </View>
+            ); 
+        } 
+        return null
     }
 
     onWalletPress () {
@@ -53,10 +77,9 @@ class WalletDetailExtended extends Component  {
     render () {
         const {priceView, qrcodeValue} = this.props
         const { name, currency, publicKey } = this.props.wallet;
-        console.log(this.props.wallet)
         const { headerContentStyle, headerTextStyle, 
             thumbnail_style, thumbnailContainerStyle,
-            amountContentStyle, screenStyle, qrcodeStyle, bigqrcodeStyle, footerStyle} = styles;
+            amountContentStyle, screenStyle, txStyle, footerStyle } = styles;
         return ( 
             <View style={screenStyle}>
                 <View >
@@ -64,7 +87,7 @@ class WalletDetailExtended extends Component  {
                     <View style={{marginBottom: -3}}>
                         <CardSection > 
                             <View style={thumbnailContainerStyle}>
-                                <Image style={thumbnail_style} source={{ uri : GetCoinImage(currency)}}/>
+                                <Image style={thumbnail_style} source={require('../assets/btc.png')}/>
                             </View>
                             <View style={headerContentStyle}>
                                 <Text style={headerTextStyle}> {name} </Text>
@@ -79,24 +102,18 @@ class WalletDetailExtended extends Component  {
                 </Card>
                 </View>
                 <View>
-                <View style={qrcodeStyle}>
-                <QRCode
-                    value={publicKey}
-                    size={250}
-                    logoSize={30}
-                    logoBackgroundColor='transparent'
+                <ListView 
+                    style={txStyle}
+                    dataSource={this.state.dataSource}
+                    renderRow={this.renderRow || []}
+                    scrollEnabled={false}
                 />
-                </View>
-                <View>
-                    <Text onPress={this.writeToClipboard}>{publicKey}</Text>
-                </View>
                 <CardSection style={footerStyle}>
                     <Button onPress={() => {
                         this.onSendPress();
                         }}>
                         Send 
-                    </Button>
-                    
+                    </Button>        
                     <Button onPress={() => {
                         this.onReceivePress()
                         }}>
@@ -149,7 +166,6 @@ class WalletDetailExtended extends Component  {
                 </Dialog>
                 </View>
                 </KeyboardAvoidingView>
-
                 <Dialog
                     width={1}
                     rounded
@@ -179,6 +195,9 @@ class WalletDetailExtended extends Component  {
                         logoBackgroundColor='transparent'
                     />
                 </View>
+                <View>
+                    <Text onPress={this.writeToClipboard}>{publicKey}</Text>
+                </View>
                 </Dialog>
             </View>
         </View>
@@ -188,11 +207,11 @@ class WalletDetailExtended extends Component  {
 
 const mapStateToProps = (state, ownProps) => {
     const expanded = state.wallet.selectedWalletId === ownProps.wallet.currency;
-    const {priceView, qrcodeValue} = state.wallet
-    return  {priceView, qrcodeValue,expanded}
+    const {priceView, qrcodeValue, txs} = state.wallet
+    return  {priceView, qrcodeValue, txs, expanded}
 };
 
-export default connect(mapStateToProps, {walletViewChanged, selectWalletChart, scanQRcode})(WalletDetailExtended);
+export default connect(mapStateToProps, {walletViewChanged, selectWalletChart, scanQRcode, getWalletTxs})(WalletDetailExtended);
 
 const styles = {
     screenStyle: {
@@ -267,6 +286,10 @@ const styles = {
     },
     sendPopup: {
         marginTop: 550,
+    },
+    txStyle: {
+        marginTop: 20,
+        marginBottom:20,
     }
 }
 

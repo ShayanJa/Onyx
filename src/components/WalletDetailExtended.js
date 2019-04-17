@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableOpacity, KeyboardAvoidingView, ListView, Clipboard } from 'react-native';
+import { Text, View, Image, TouchableOpacity, KeyboardAvoidingView, Clipboard, FlatList } from 'react-native';
 import { Card, CardSection, Button } from './common';
 import { WeiToEther } from '../Util.js'
 import { walletViewChanged, selectWalletChart, scanQRcode, getWalletTxs } from '../actions';
@@ -19,9 +19,8 @@ class WalletDetailExtended extends Component  {
             receiveVisible: false,
             copytext: "",
             qrcodeValue: "",
-            dataSource: [] //create a dataSource
         }
-        this.renderRow = this.renderRow.bind(this)
+        this.renderItem = this.renderItem.bind(this)
         this.onSendPress = this.onSendPress.bind(this)
     }
 
@@ -29,26 +28,24 @@ class WalletDetailExtended extends Component  {
         if (this.props.sendVisible != null) {
             this.setState({ sendVisible: this.props.sendVisible}) 
         }
-        this.props.getWalletTxs(this.props.wallet.publicKey);  
-        this.createDataSource(this.props)  
+        this.props.getWalletTxs(this.props.wallet.publicKey);
     }
 
-    createDataSource({ txs }) {
-        const ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2
-        });
-        this.setState({dataSource: ds.cloneWithRows(txs)})
-    }
-
-    renderRow(tx) {
-        if ( tx.addr == this.props.wallet.publicKey ) {
+    renderItem(tx) {
+        if ( tx.item.addr == this.props.wallet.publicKey ) {
             return (
                 <View style={styles.tabStyle}>
-                    <TxDetail key={tx.n} tx={tx}/> 
+                    <TxDetail key={tx.index} tx={tx.item}/> 
                 </View>
-            ); 
-        } 
-        return null
+            );   
+        }     
+    }
+    emptyTxList () {
+        return (
+            <View style={styles.tabStyle}>
+                <Text>No Txs</Text>
+            </View>
+        );   
     }
 
     onWalletPress () {
@@ -102,11 +99,12 @@ class WalletDetailExtended extends Component  {
                 </Card>
                 </View>
                 <View>
-                <ListView 
+                <FlatList 
                     style={txStyle}
-                    dataSource={this.state.dataSource}
-                    renderRow={this.renderRow || []}
-                    scrollEnabled={false}
+                    data={this.props.txs}
+                    renderItem={this.renderItem}
+                    keyExtractor={(item, index) => index.toString()}
+                    ListEmptyComponent={this.emptyTxList}
                 />
                 <CardSection style={footerStyle}>
                     <Button onPress={() => {

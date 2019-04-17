@@ -5,10 +5,17 @@ import { SatoshiToBTC } from '../Util.js'
 import { connect } from 'react-redux';
 
 class TxDetail extends Component  {
+
+
     render () {
-        const { value } = this.props.tx;
+        const { value, spent } = this.props.tx;
         const { headerContentStyle, headerTextStyle, thumbnailContainerStyle,
-            amountContentStyle} = styles;
+            amountContentStyle, imageStyle} = styles;
+        if (spent) {
+            pic = <Image style={imageStyle} source={require('../assets/topright.png')}/>
+        } else {
+            pic = <Image style={imageStyle} source={require('../assets/bottomright.png')}/>
+        }
         return (
             <View>
             <TouchableOpacity >
@@ -18,7 +25,7 @@ class TxDetail extends Component  {
                         <CardSection > 
                             <View style={thumbnailContainerStyle}>
                             {/* Add image here */}
-                                {/* <Image style={thumbnail_style} source={{ uri : GetCoinImage(currency)}}/> */}
+                                {pic}
                             </View>
                             <View style={headerContentStyle}>
                             </View>
@@ -57,10 +64,9 @@ const styles = {
         marginRight: 10,
     },
     imageStyle: {
-        height: 50,
-        width: 20,
+        height: 30,
+        width: 30,
         flex: 1,
-        width: null,
     },
     amountContentStyle: {
         flex: 1,
@@ -68,9 +74,9 @@ const styles = {
     }
 }
 
-const mapStateToProps = (state, ownProps) => {
-    const {priceView} = state.wallet
-    return  {priceView}
+const mapStateToProps = ({wallet}) => {
+    const { priceView } = wallet
+    return  { priceView }
 };
 
 export default connect(mapStateToProps, {})(TxDetail);

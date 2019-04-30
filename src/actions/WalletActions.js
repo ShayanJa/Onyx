@@ -9,6 +9,7 @@ import {
     GET_WALLET_BALANCE,
     GET_WALLET_BALANCE_FAIL,
     SCAN_QR_CODE,
+    GET_WALLET_TXS,
 } from './types'
 
 // import blockexplorer from 'blockchain.info/blockexplorer'
@@ -46,16 +47,9 @@ export const walletInit = () => {
     }
 }
 
-export const ETHWalletInit = () => {
-    return (dispatch) => {
-    }
-}
-
-
 export const walletFetch = (wallets) => {
     return async (dispatch) => {
         dispatch({type: WALLET_FETCH})
-        var self = this;
         try {
             const response = await axios.get('https://api.coinmarketcap.com/v1/ticker/?limit=10');
             var newCoinPrices = {};
@@ -83,13 +77,28 @@ export const getWalletBalance = (publicKey) => {
     return async (dispatch) => {
         try {
             //get amount value from blockexplorer
-            const response = await axios.get('https://blockexplorer.com/api/addr/' + publicKey + '/balance');
-            dispatch({ type: GET_WALLET_BALANCE, payload: response.data });
+            const response = await axios.get('https://blockchain.info/rawaddr/' + publicKey );
+            dispatch({ type: GET_WALLET_BALANCE, payload: response.data.final_balance });
         }
         catch (error) {
             //Returns old balance and Doen't update the balance
-            console.log("unable to update balance ");
+            console.log("unable to update balance " + error);
             dispatch({ type: GET_WALLET_BALANCE_FAIL});
+        }
+    }
+}
+
+export const getWalletTxs = (publicKey) => {
+    return async (dispatch) => {
+        try {
+            //get amount value from blockexplorer
+            const response = await axios.get('https://blockchain.info/rawaddr/' + publicKey);
+            dispatch({ type: GET_WALLET_TXS, payload: response.data.txs[0].out });
+        }
+        catch (error) {
+            //Returns old balance and Doen't update the balance
+            console.log("unable to get txs ");
+            dispatch({ type: GET_WALLET_TXS_FAIL});
         }
     }
 }
@@ -123,23 +132,3 @@ export const scanQRcode = (address) => {
         payload: address
     }
 }
-
-
-export const dbInit = () => {
-    return (dispatch) => {
-        dispatch({type: WALLET_FETCH})
-    }
-}
-
-function errorCB(err) {
-    console.log("SQL Error: " + err);
-}
-      
-function successCB() {
-    console.log("SQL executed fine");
-}
-      
-function openCB() {
-    console.log("Database OPENED");
-}
-

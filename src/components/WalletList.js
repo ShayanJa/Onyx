@@ -3,8 +3,8 @@ import { Text, View, ListView } from 'react-native';
 import WalletDetail from './WalletDetail.js'
 import _ from 'lodash';
 import { walletFetch, walletInit } from '../actions';
-import {WeiToEther} from '../Util.js';
-import {Spinner} from './common'
+import { SatoshiToBTC } from '../Util.js';
+import { Spinner } from './common'
 import { connect } from 'react-redux';
 
 
@@ -58,7 +58,7 @@ class WalletList extends Component {
                     scrollEnabled={false}
                     />
                     <View style={styles.amountContainerStyle}>
-                        <Text style={styles.amountStyle}>Total {"$ " + WeiToEther(this.props.walletTotal).toFixed(2)}</Text>
+                        <Text style={styles.amountStyle}>Total {"$ " + SatoshiToBTC(this.props.walletTotal).toFixed(2)}</Text>
                     </View>
 
                 </View>

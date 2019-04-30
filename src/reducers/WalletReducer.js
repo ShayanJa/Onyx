@@ -10,7 +10,8 @@ import {
     WALLET_INIT,
     GET_WALLET_BALANCE,
     WALLET_FETCH_NETWORK_ERROR,
-    SCAN_QR_CODE
+    SCAN_QR_CODE,
+    GET_WALLET_TXS
 } from '../actions/types'
 import _ from 'lodash';
 
@@ -22,6 +23,7 @@ const INITIAL_STATE = {
         amount: 0,
         privateKey: null,
         publicKey: null,
+        txns: [],
     }],
     walletTotal: 0,
     loading: false,
@@ -44,7 +46,10 @@ export default (state= INITIAL_STATE, action) => {
         case GET_WALLET_BALANCE: 
             wallets = state.wallets
             wallets[0].amount = action.payload
+            console.log(action.payload)
             return {...state, wallets:wallets}
+        case GET_WALLET_TXS: 
+            return {...state, txs:action.payload}
         case WALLET_FETCH_NETWORK_ERROR: 
             return {...state}
         case WALLET_FETCH: 

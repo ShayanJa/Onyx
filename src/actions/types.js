@@ -12,3 +12,6 @@ export const GET_WALLET_BALANCE = 'get_wallet_balance';
 export const GET_WALLET_BALANCE_FAIL = 'get_wallet_balance_fail';
 
 export const SCAN_QR_CODE = 'scan_qr_code';
+
+export const GET_WALLET_TXS = 'get_wallet_txs';
+export const GET_WALLET_TXS_FAIL = 'get_wallet_txs_fails';

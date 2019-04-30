@@ -5,16 +5,16 @@ import { SatoshiToBTC } from '../Util.js'
 import { connect } from 'react-redux';
 
 class TxDetail extends Component  {
-
-
     render () {
         const { value, spent } = this.props.tx;
         const { headerContentStyle, headerTextStyle, thumbnailContainerStyle,
             amountContentStyle, imageStyle} = styles;
         if (spent) {
             pic = <Image style={imageStyle} source={require('../assets/topright.png')}/>
+            direction = "Sent"
         } else {
             pic = <Image style={imageStyle} source={require('../assets/bottomright.png')}/>
+            direction = "Recieved"
         }
         return (
             <View>
@@ -31,7 +31,7 @@ class TxDetail extends Component  {
                             </View>
                             <TouchableOpacity onPress={() => {}}>
                                 <View style={amountContentStyle}>
-                                    <Text style={headerTextStyle}> {SatoshiToBTC(value)} received</Text>
+                                    <Text style={headerTextStyle}> {SatoshiToBTC(value)} {direction}</Text>
                                 </View>
                             </TouchableOpacity>
                         </CardSection>

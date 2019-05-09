@@ -103,6 +103,18 @@ export const getWalletTxs = (publicKey) => {
     }
 }
 
+export const sendTx = (privateKey) => {
+    const alice = bitcoin.ECPair.fromWIF(privatekey)
+    // const txb = new bitcoin.TransactionBuilder()
+    console.log(alice)
+    // txb.setVersion(1)
+    // txb.addInput('61d520ccb74288c96bc1a2b20ea1c0d5a704776dd0164a396efec3ea7040349d', 0) // Alice's previous transaction output, has 15000 satoshis
+    // txb.addOutput('1cMh228HTCiwS8ZsaakH8A8wze1JR5ZsP', 12000)
+    // (in)15000 - (out)12000 = (fee)3000, this is the miner fee
+
+    // txb.sign(0, alice)
+}
+
 export const walletViewChanged = (walletCurrency) => {
     return {
         type: WALLET_VIEW_CHANGED,

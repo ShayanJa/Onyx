@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableOpacity, KeyboardAvoidingView, Clipboard, FlatList } from 'react-native';
+import { Text, View, Image, TouchableOpacity, KeyboardAvoidingView, Clipboard, FlatList, Dimensions, Keyboard } from 'react-native';
 import { Card, CardSection, Button } from './common';
 import { WeiToEther } from '../Util.js'
-import { walletViewChanged, selectWalletChart, scanQRcode, getWalletTxs } from '../actions';
+import { walletViewChanged, selectWalletChart, scanQRcode, getWalletTxs, sendTx } from '../actions';
 import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
 import Dialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
@@ -19,16 +19,31 @@ class WalletDetailExtended extends Component  {
             receiveVisible: false,
             copytext: "",
             qrcodeValue: "",
+            popupHeight: 800,
         }
+        
         this.renderItem = this.renderItem.bind(this)
         this.onSendPress = this.onSendPress.bind(this)
     }
 
     componentWillMount() {
+        Keyboard.addListener('keyboardWillShow', this._keyboardDidShow)
+        Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
         if (this.props.sendVisible != null) {
             this.setState({ sendVisible: this.props.sendVisible}) 
         }
         this.props.getWalletTxs(this.props.wallet.publicKey);
+    }
+    _keyboardDidShow = (e) => {
+        this.setState({
+            popupHeight: 800 + e.endCoordinates.height/3.5
+        })
+    }
+  
+    _keyboardDidHide = () => {
+        this.setState({
+            popupHeight: 800
+        })
     }
 
     renderItem(tx) {
@@ -61,6 +76,11 @@ class WalletDetailExtended extends Component  {
     onSendPress() {
         this.setState({sendVisible: true})
     }
+
+    onTxSend() {
+        this.props.sendTx(this.props.wallet.publicKey, this.props.wallet.privateKey, this.props.wallet.publicKey, .0001 )
+    }
+    
     onScanPress() {
         this.setState({sendVisible: false})
         Actions.qrcodeScanner(this.props)
@@ -120,11 +140,12 @@ class WalletDetailExtended extends Component  {
                 </CardSection>
                 <KeyboardAvoidingView
                     behavior="padding"
+                    keyboardVerticalOffset={20}
                 >
                 <View style={styles.sendPopup}>
                 <Dialog
                     width={1}
-                    height={800}
+                    height={this.state.popupHeight}
                     rounded
                     visible={this.state.sendVisible}
                     dialogStyle={styles.sendPopup}
@@ -160,6 +181,13 @@ class WalletDetailExtended extends Component  {
                             borderColor={'#00dcff'}
                             backgroundColor={'#FFFFFF'}
                         />
+                        <CardSection style={footerStyle}>
+                            <Button onPress={() => {
+                                this.onTxSend();
+                                }}>
+                                Send 
+                            </Button>        
+                        </CardSection>
                     </View>
                 </Dialog>
                 </View>
@@ -209,7 +237,7 @@ const mapStateToProps = (state, ownProps) => {
     return  {priceView, qrcodeValue, txs, expanded}
 };
 
-export default connect(mapStateToProps, {walletViewChanged, selectWalletChart, scanQRcode, getWalletTxs})(WalletDetailExtended);
+export default connect(mapStateToProps, {walletViewChanged, selectWalletChart, scanQRcode, getWalletTxs, sendTx})(WalletDetailExtended);
 
 const styles = {
     screenStyle: {

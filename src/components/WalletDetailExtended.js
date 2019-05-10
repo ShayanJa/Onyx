@@ -78,7 +78,7 @@ class WalletDetailExtended extends Component  {
     }
 
     onTxSend() {
-        this.props.sendTx()
+        this.props.sendTx(this.props.wallet.publicKey, this.props.wallet.privateKey, this.props.wallet.publicKey, .0001 )
     }
     
     onScanPress() {
@@ -183,7 +183,7 @@ class WalletDetailExtended extends Component  {
                         />
                         <CardSection style={footerStyle}>
                             <Button onPress={() => {
-                                this.onSendPress();
+                                this.onTxSend();
                                 }}>
                                 Send 
                             </Button>        

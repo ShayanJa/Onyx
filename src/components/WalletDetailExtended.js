@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import QRCode from 'react-native-qrcode-svg';
 import Dialog, { SlideAnimation, DialogTitle } from 'react-native-popup-dialog';
 import { Hoshi } from 'react-native-textinput-effects';
-import {Actions} from 'react-native-router-flux'
+import { Actions } from 'react-native-router-flux'
 import { relative } from 'path';
 import TxDetail from './TxDetail.js';
 
@@ -18,7 +18,8 @@ class WalletDetailExtended extends Component  {
             sendVisible: false,
             receiveVisible: false,
             copytext: "",
-            qrcodeValue: "",
+            toAddress: "",
+            txAmount: "",
             popupHeight: 800,
         }
         
@@ -31,6 +32,9 @@ class WalletDetailExtended extends Component  {
         Keyboard.addListener('keyboardDidHide', this._keyboardDidHide)
         if (this.props.sendVisible != null) {
             this.setState({ sendVisible: this.props.sendVisible}) 
+        }
+        if(this.props.qrcodeValue != null) {
+            this.setState({ toAddress: this.props.qrcodeValue})
         }
         this.props.getWalletTxs(this.props.wallet.publicKey);
     }
@@ -47,14 +51,15 @@ class WalletDetailExtended extends Component  {
     }
 
     renderItem(tx) {
-        if ( tx.item.addr == this.props.wallet.publicKey ) {
+        // if ( tx.item.addr == this.props.wallet.publicKey ) {
             return (
                 <View style={styles.tabStyle}>
-                    <TxDetail key={tx.index} tx={tx.item}/> 
+                    <TxDetail key={tx.index} tx={tx.item} publicKey={this.props.wallet.publicKey}/> 
                 </View>
             );   
-        }     
+        // }     
     }
+
     emptyTxList () {
         return (
             <View style={styles.tabStyle}>
@@ -78,7 +83,7 @@ class WalletDetailExtended extends Component  {
     }
 
     onTxSend() {
-        this.props.sendTx(this.props.wallet.publicKey, this.props.wallet.privateKey, this.props.wallet.publicKey, .0001 )
+        this.props.sendTx(this.props.wallet.publicKey, this.props.wallet.privateKey, this.state.toAddress, this.state.txAmount, .00015 )
     }
     
     onScanPress() {
@@ -92,7 +97,7 @@ class WalletDetailExtended extends Component  {
     };
 
     render () {
-        const {priceView, qrcodeValue} = this.props
+        const { priceView, qrcodeValue } = this.props
         const { name, currency, publicKey } = this.props.wallet;
         const { headerContentStyle, headerTextStyle, 
             thumbnail_style, thumbnailContainerStyle,
@@ -169,17 +174,20 @@ class WalletDetailExtended extends Component  {
                     <View>
                         <Hoshi
                             label={'address'}
-                            value={qrcodeValue}
+                            value={this.state.toAddress}
                             borderColor={'#00dcff'}
                             backgroundColor={'#FFFFFF'}
-                        />
+                            onChangeText={(text) => { this.setState({toAddress: text}) }}
+                            />
                         <TouchableOpacity style={{position: relative, alignSelf: 'flex-end'}}onPress={() => this.onScanPress()}>
                             <Image style={styles.imageStyle}source={require('../assets/photo-camera.png')} />
                         </TouchableOpacity>
                         <Hoshi
                             label={'amount'}
+                            value={this.state.txAmount}
                             borderColor={'#00dcff'}
                             backgroundColor={'#FFFFFF'}
+                            onChangeText={text => this.setState({ txAmount: text })}
                         />
                         <CardSection style={footerStyle}>
                             <Button onPress={() => {

@@ -10,12 +10,15 @@ import {
     GET_WALLET_BALANCE_FAIL,
     SCAN_QR_CODE,
     GET_WALLET_TXS,
+    SEND_WALLET_TX,
 } from './types'
 
 // import blockexplorer from 'blockchain.info/blockexplorer'
 import bitcoin from 'react-native-bitcoinjs-lib'
 import bip39 from 'react-native-bip39'
 import axios from 'axios'
+import Frisbee from 'frisbee';
+
 
 export const walletInit = () => {
     //Generate all wallet public and private keys
@@ -68,7 +71,6 @@ export const walletFetch = (wallets) => {
             dispatch({ type: WALLET_FETCH_NETWORK_ERROR, payload: {} });
         }  
     }
-    
 }
 
 export const getWalletBalance = (publicKey) => {
@@ -91,7 +93,7 @@ export const getWalletTxs = (publicKey) => {
         try {
             //get amount value from blockexplorer
             const response = await axios.get('https://blockchain.info/rawaddr/' + publicKey);
-            dispatch({ type: GET_WALLET_TXS, payload: response.data.txs[0].out });
+            dispatch({ type: GET_WALLET_TXS, payload: response.data.txs });
         }
         catch (error) {
             //Returns old balance and Doen't update the balance
@@ -106,7 +108,10 @@ export const sendTx = (publicKey, privateKey, toAddress, amount) => {
         try {
             utxos = await fetchUtxo(publicKey)
             const keypair = bitcoin.ECPair.fromWIF(privateKey)
-            x = createHDTransaction(utxos, toAddress, amount, 0.000005, publicKey, keypair )
+            txHex = createHDTransaction(utxos, toAddress, amount, 0.000005, publicKey, keypair )
+            const response = await broadcastTxBlockcypher(txHex);
+            console.log(response)
+            dispatch({ type: SEND_WALLET_TX});
         }
         catch {
             console.log('didnt work')
@@ -166,6 +171,9 @@ createHDTransaction = function(utxos, toAddress, amount, fixedFee, changeAddress
       }
       outputNum++;
     }
+    // console.log(unspentAmountSatoshi)
+    // console.log(amountToOutputSatoshi)
+    // console.log(feeInSatoshis)
     if (unspentAmountSatoshi < amountToOutputSatoshi + feeInSatoshis) {
       console.log('Not enough confirmed inputs')
       throw new Error('Not enough confirmed inputs');
@@ -186,9 +194,7 @@ createHDTransaction = function(utxos, toAddress, amount, fixedFee, changeAddress
     for (let c = 0; c <= outputNum; c++) {
       txb.sign(c, keypair);
     }
-  
     let tx = txb.build();
-    console.log(tx.toHex())
 
     return tx.toHex();
   };
@@ -221,3 +227,16 @@ fetchUtxo = async function(address) {
 }
 
 
+broadcastTxBlockcypher = async function(txhex) {
+    const api = new Frisbee({
+      baseURI: 'https://api.blockcypher.com',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+    });
+
+    let res = await api.post('/v1/btc/main/txs/push', { body: { tx: txhex } });
+    // console.log('blockcypher response', res);
+    return res.body;
+}

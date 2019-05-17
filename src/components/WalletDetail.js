@@ -12,7 +12,6 @@ class WalletDetail extends Component  {
 
     componentWillMount() {
         const {wallet} = this.props
-        console.log(wallet.publicKey)
         this.props.getWalletBalance(wallet.publicKey)
     }
 

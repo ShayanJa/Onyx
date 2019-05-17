@@ -6,16 +6,31 @@ import { connect } from 'react-redux';
 
 class TxDetail extends Component  {
     render () {
-        const { value, spent } = this.props.tx;
+        // const { value, spent } = this.props.tx;
+        const { inputs, out } = this.props.tx;
+        const { publicKey } = this.props.publicKey;
         const { headerContentStyle, headerTextStyle, thumbnailContainerStyle,
             amountContentStyle, imageStyle} = styles;
-        if (spent) {
-            pic = <Image style={imageStyle} source={require('../assets/topright.png')}/>
-            direction = "Sent"
-        } else {
-            pic = <Image style={imageStyle} source={require('../assets/bottomright.png')}/>
-            direction = "Recieved"
-        }
+        totalInput = 0
+        totalOutput = 0
+        inputs.forEach (function (input) {
+            if (input.addr == publicKey) {
+                totalInput.input += input.value
+            }
+        });
+        out.forEach( function (output) {
+            if (output.addr == publicKey) {
+                totalOutput.output += output.value
+            }
+        });
+
+        // if (spent) {
+        //     pic = <Image style={imageStyle} source={require('../assets/topright.png')}/>
+        //     direction = "Sent"
+        // } else {
+        //     pic = <Image style={imageStyle} source={require('../assets/bottomright.png')}/>
+        //     direction = "Recieved"
+        // }
         return (
             <View>
             <TouchableOpacity >
@@ -25,13 +40,13 @@ class TxDetail extends Component  {
                         <CardSection > 
                             <View style={thumbnailContainerStyle}>
                             {/* Add image here */}
-                                {pic}
+                                {/* {pic} */}
                             </View>
                             <View style={headerContentStyle}>
                             </View>
                             <TouchableOpacity onPress={() => {}}>
                                 <View style={amountContentStyle}>
-                                    <Text style={headerTextStyle}> {SatoshiToBTC(value)} {direction}</Text>
+                                    {/* <Text style={headerTextStyle}> {SatoshiToBTC(value)} {direction}</Text> */}
                                 </View>
                             </TouchableOpacity>
                         </CardSection>

@@ -71,7 +71,6 @@ export const walletFetch = (wallets) => {
             dispatch({ type: WALLET_FETCH_NETWORK_ERROR, payload: {} });
         }  
     }
-    
 }
 
 export const getWalletBalance = (publicKey) => {

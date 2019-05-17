@@ -17,12 +17,12 @@ class TxDetail extends Component  {
                         <CardSection > 
                             <View style={thumbnailContainerStyle}>
                             {/* Add image here */}
-                            <Image style={imageStyle} source={require('../assets/topright.png')}/>    
+                            <Image style={imageStyle} source={require('../assets/bottomright.png')}/>    
                             </View>
                             <View style={headerContentStyle}>
                             <TouchableOpacity onPress={() => {}}>
                                 <View style={amountContentStyle}>
-                                    <Text style={headerTextStyle}> {SatoshiToBTC(this.props.value)} Sent</Text>
+                                    <Text style={headerTextStyle}> {SatoshiToBTC(this.props.value)} Received</Text>
                                 </View>
                             </TouchableOpacity>
                             </View>
@@ -42,6 +42,8 @@ const styles = {
         justifyContent: 'center',
     },
     headerTextStyle: {
+        flex: 1,
+        justifyContent: 'flex-start',
         fontSize: 18,
         color:  "#131111"
     },

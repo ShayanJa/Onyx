@@ -26,11 +26,9 @@ export function GetCoinImage(coinName) {
 
 export function GetWalletAmount (wallets, newCoinPrices) {
     var newTotalValue = 0
-    // var wallets = self.state.wallets
     for (var i = 0; i < wallets.length; i++){
         var coinSymbol = wallets[i].Currency
         newTotalValue += newCoinPrices[coinSymbol]*wallets[i].Amount
     }
-    // console.log(newTotalValue)
     return newTotalValue
 }

@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableOpacity } from 'react-native';
-import { Card, CardSection } from './common';
+import { View } from 'react-native';
 import TxRecieved from './TxRecieved';
 import TxSent from './TxSent'
-import { SatoshiToBTC } from '../Util.js'
 import { connect } from 'react-redux';
 
 class TxDetail extends Component  {

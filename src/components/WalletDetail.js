@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Text, View, Image, TouchableOpacity, LayoutAnimation } from 'react-native';
 import { Card, CardSection, Button } from './common';
-import {SatoshiToBTC, GetCoinImage} from '../Util.js'
+import {SatoshiToBTC} from '../Util.js'
 import { walletViewChanged, selectWalletChart, getWalletBalance } from '../actions';
 import { connect } from 'react-redux';
 import WalletDetailExtended from './WalletDetailExtended.js'

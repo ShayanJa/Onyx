@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  TouchableOpacity,
 } from 'react-native';
 import { scanQRcode } from '../actions';
 import QRCodeScanner from 'react-native-qrcode-scanner';

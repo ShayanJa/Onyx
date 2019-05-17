@@ -97,7 +97,6 @@ export const getWalletTxs = (publicKey) => {
         }
         catch (error) {
             //Returns old balance and Doen't update the balance
-            console.log("unable to get txs ");
             dispatch({ type: GET_WALLET_TXS_FAIL});
         }
     }
@@ -110,7 +109,6 @@ export const sendTx = (publicKey, privateKey, toAddress, amount) => {
             const keypair = bitcoin.ECPair.fromWIF(privateKey)
             txHex = createHDTransaction(utxos, toAddress, amount, 0.000005, publicKey, keypair )
             const response = await broadcastTxBlockcypher(txHex);
-            console.log(response)
             dispatch({ type: SEND_WALLET_TX});
         }
         catch {
@@ -171,9 +169,7 @@ createHDTransaction = function(utxos, toAddress, amount, fixedFee, changeAddress
       }
       outputNum++;
     }
-    // console.log(unspentAmountSatoshi)
-    // console.log(amountToOutputSatoshi)
-    // console.log(feeInSatoshis)
+
     if (unspentAmountSatoshi < amountToOutputSatoshi + feeInSatoshis) {
       console.log('Not enough confirmed inputs')
       throw new Error('Not enough confirmed inputs');

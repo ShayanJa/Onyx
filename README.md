@@ -11,6 +11,16 @@ Send and receive BTC easily and securely while have full custody of your private
 <img src="images/TxScreen.png" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="images/RecieveScreen.png" width="30%">
 
-**Disclaimer. Use with small amounts of BTC. Still under Development**
+#### Disclaimer
+- Use with small amounts of BTC. Project still under Development
+- Fees are set extremely low so expect long confirmation time
+
+
+### Running locally
+- Make sure you have react-native installed. Use `npm install -g react-native-cli`
+- As well as xcode for ios or android studio for android
+- Install project dependencies using `npm install` 
+- run `react-native run-ios` or `react-native run-android` respectively
+
 
 BTC Donations: 1FSdT1xrXrkksnvjGzkhj7hkQAqzAqqm8P

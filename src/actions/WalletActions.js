@@ -10,6 +10,7 @@ import {
     GET_WALLET_BALANCE_FAIL,
     SCAN_QR_CODE,
     GET_WALLET_TXS,
+    GET_WALLET_TXS_FAIL,
     SEND_WALLET_TX,
 } from './types'
 

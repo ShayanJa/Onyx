@@ -11,7 +11,8 @@ import {
     GET_WALLET_BALANCE,
     WALLET_FETCH_NETWORK_ERROR,
     SCAN_QR_CODE,
-    GET_WALLET_TXS
+    GET_WALLET_TXS,
+    GET_WALLET_TXS_FAIL,
 } from '../actions/types'
 import _ from 'lodash';
 
@@ -50,6 +51,8 @@ export default (state= INITIAL_STATE, action) => {
             return {...state, wallets:wallets}
         case GET_WALLET_TXS: 
             return {...state, txs:action.payload}
+        case GET_WALLET_TXS_FAIL: 
+            return {...state}
         case WALLET_FETCH_NETWORK_ERROR: 
             return {...state}
         case WALLET_FETCH: 

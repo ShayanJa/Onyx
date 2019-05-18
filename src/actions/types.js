@@ -14,5 +14,5 @@ export const GET_WALLET_BALANCE_FAIL = 'get_wallet_balance_fail';
 export const SCAN_QR_CODE = 'scan_qr_code';
 
 export const GET_WALLET_TXS = 'get_wallet_txs';
-export const GET_WALLET_TXS_FAIL = 'get_wallet_txs_fails';
+export const GET_WALLET_TXS_FAIL = 'get_wallet_txs_fail';
 export const SEND_WALLET_TX = 'send_wallet_tx';

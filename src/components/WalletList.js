@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, ListView } from 'react-native';
+import { Text, View, FlatList } from 'react-native';
 import WalletDetail from './WalletDetail.js'
 import _ from 'lodash';
 import { walletFetch, walletInit } from '../actions';
@@ -11,10 +11,6 @@ import { connect } from 'react-redux';
 class WalletList extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            dataSource: [] //create a dataSource
-        };
         this.renderRow = this.renderRow.bind(this)
     }
 
@@ -24,41 +20,32 @@ class WalletList extends Component {
             console.log("Initializing wallet")
         }  
         this.props.walletFetch(this.props.wallets);    
-        this.createDataSource(this.props)
-    }
-    componentWillReceiveProps(nextProps) {
-        this.createDataSource(nextProps);
-    }
-
-    createDataSource({ wallets }) {
-        const ds = new ListView.DataSource({
-            rowHasChanged: (r1, r2) => r1 !== r2
-        });
-        this.setState({dataSource: ds.cloneWithRows(wallets)})
     }
 
     renderRow(wallet) {
         return (
             <View style={styles.tabStyle}>
-                <WalletDetail  key={wallet.Name}  wallet={wallet} coinPrices={this.props.newCoinPrices} />
+                <WalletDetail  key={wallet.index}  wallet={wallet.item} coinPrices={this.props.newCoinPrices} />
             </View>
         ); 
     }
 
     render() {
+        const { albumListStyle, amountContainerStyle, amountStyle } = styles
         if (this.props.loading == true){
             return <Spinner size="large" />;
         } else {
             return (
                 <View >
-                    <ListView 
-                    style={styles.albumListStyle}
-                    dataSource={this.state.dataSource}
-                    renderRow={this.renderRow}
-                    scrollEnabled={false}
+                    <FlatList 
+                    style={albumListStyle}
+                    data={this.props.wallets}
+                    renderItem={this.renderRow}
+                    keyExtractor={(item, index) => index.toString()}
+                    // ListEmptyComponent={//emplylistcomponent}
                     />
-                    <View style={styles.amountContainerStyle}>
-                        <Text style={styles.amountStyle}>Total {"$ " + SatoshiToBTC(this.props.walletTotal).toFixed(2)}</Text>
+                    <View style={amountContainerStyle}>
+                        <Text style={amountStyle}>Total {"$ " + SatoshiToBTC(this.props.walletTotal).toFixed(2)}</Text>
                     </View>
 
                 </View>
@@ -68,9 +55,6 @@ class WalletList extends Component {
 }
 
 const styles = {
-    cardStyle: {
-        height: 100,
-    },
     albumListStyle: {
         paddingBottom: 10,
         marginTop: 30,
@@ -94,7 +78,6 @@ const styles = {
 
 const mapStateToProps = ({wallet}) => {
     const {wallets, newCoinPrices, walletTotal, loading, isInitialized} = wallet
-    console.log(wallets)
     return  {wallets, newCoinPrices, walletTotal, loading, isInitialized}
 };
 

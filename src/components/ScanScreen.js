@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import {
   StyleSheet,
   Text,
-  TouchableOpacity,
 } from 'react-native';
 import { scanQRcode } from '../actions';
 import QRCodeScanner from 'react-native-qrcode-scanner';
@@ -35,9 +34,9 @@ class ScanScreen extends Component {
 }
 
 const mapStateToProps = ({wallet}) => {
-  const {qrcodeValue} = wallet
+  const { qrcodeValue } = wallet
   sendVisible = true
-  return  {qrcodeValue, sendVisible}
+  return  { qrcodeValue, sendVisible }
 };
 
 export default connect(mapStateToProps, { scanQRcode })(ScanScreen);

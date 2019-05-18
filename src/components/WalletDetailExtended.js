@@ -51,13 +51,11 @@ class WalletDetailExtended extends Component  {
     }
 
     renderItem(tx) {
-        // if ( tx.item.addr == this.props.wallet.publicKey ) {
-            return (
-                <View style={styles.tabStyle}>
-                    <TxDetail key={tx.index} tx={tx.item} publicKey={this.props.wallet.publicKey}/> 
-                </View>
-            );   
-        // }     
+        return (
+            <View style={styles.tabStyle}>
+                <TxDetail key={tx.index} tx={tx.item} publicKey={this.props.wallet.publicKey}/> 
+            </View>
+        );   
     }
 
     emptyTxList () {

@@ -49,10 +49,7 @@ class WalletDetail extends Component  {
                         </View>
                         <View>
                         </View>
-                        <View className='row'>
-                            {/* {this.renderDescription()} */}
-                                {/* <InfoBox data={this.props.bpi} /> */}
-                        </View>
+                        
                     </Card>
                 </View>
             </TouchableOpacity >
@@ -96,7 +93,7 @@ const styles = {
 const mapStateToProps = (state, ownProps) => {
     const expanded = state.wallet.selectedWalletId === ownProps.wallet.currency;
     const {priceView} = state.wallet
-    return  {priceView, expanded}
+    return  { priceView, expanded }
 };
 
 export default connect(mapStateToProps, {walletViewChanged, selectWalletChart, getWalletBalance})(WalletDetail);

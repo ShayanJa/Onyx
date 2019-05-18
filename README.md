@@ -6,14 +6,13 @@ Built with React-Native and Redux persist
 Send and receive BTC easily and securely while have full custody of your private keys!
 
 
-
 <img src="images/FrontScreen.png" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="images/TxScreen.png" width="30%">&nbsp;&nbsp;&nbsp;&nbsp;
 <img src="images/RecieveScreen.png" width="30%">
 
 #### Disclaimer
 - Use with small amounts of BTC. Project still under Development
-- Fees are set extremely low so expect long confirmation time
+- Fees are set extremely low so expect long confirmation time (0.0002 BTC)
 
 
 ### Running locally

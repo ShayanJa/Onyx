@@ -29,7 +29,7 @@ class WalletDetail extends Component  {
         console.log(currency)
         return (
             <View>
-            <TouchableOpacity onPress={() => Actions.walletDetail({wallet: this.props.wallet, priceView: this.props.priceView, coinPrices: this.props.coinPrices})}>
+            <TouchableOpacity onPress={() => Actions.walletDetailExtended({wallet: this.props.wallet, priceView: this.props.priceView })}>
                 <View>
                     <Card>
                         <View >
@@ -92,15 +92,15 @@ const styles = {
 
 const mapStateToProps = (state, ownProps) => {
     const expanded = state.wallet.selectedWalletId === ownProps.wallet.currency;
-    const {priceView} = state.wallet
-    return  { priceView, expanded }
+    const {priceView, coinPrices} = state.wallet
+    return  { priceView, expanded, coinPrices }
 };
 
 export default connect(mapStateToProps, {walletViewChanged, selectWalletChart, getWalletBalance})(WalletDetail);
 
 
 shownCardValue  = (valueView, ownProps) => {
-    const {coinPrices } = ownProps
+    const { coinPrices } = ownProps
     const { currency, amount } = ownProps.wallet;
     switch(valueView) {
         case 0:

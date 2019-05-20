@@ -53,18 +53,18 @@ export const walletFetch = (wallets) => {
         dispatch({type: WALLET_FETCH})
         try {
             const response = await axios.get('https://api.coinmarketcap.com/v1/ticker/?limit=10');
-            var newCoinPrices = {};
+            var coinPrices = {};
             for (var i = 0; i < response.data.length; i++) {
                 var coin = response.data[i];
-                newCoinPrices[coin.symbol] = coin.price_usd;
+                coinPrices[coin.symbol] = coin.price_usd;
             }
             //get wallet amount
             var walletTotal = 0;
             for (var i = 0; i < wallets.length; i++) {
                 var coinSymbol = wallets[i].currency;
-                walletTotal += newCoinPrices[coinSymbol] * wallets[i].amount;
+                walletTotal += coinPrices[coinSymbol] * wallets[i].amount;
             }
-            dispatch({ type: WALLET_COINMARKETCAP_API_FETCH_SUCCESS, payload: { newCoinPrices, walletTotal } });
+            dispatch({ type: WALLET_COINMARKETCAP_API_FETCH_SUCCESS, payload: { coinPrices, walletTotal } });
         }
         catch (error) {
             //Return the old values if the coinmarketcap api can't be reached

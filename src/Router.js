@@ -9,7 +9,7 @@ const RouterComponent = () => {
         <Router navigationBarStyle={styles.navBarStyles}>
             <Scene key="root" >
                 <Scene 
-                    key="walletDetail" 
+                    key="walletDetailExtended" 
                     sceneStyle={{marginTop: 85, backgroundColor: '#f1ffff'}}
                     component={WalletDetailExtended} 
                     renderTitle={() => <AppLogo/>} />

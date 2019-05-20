@@ -24,11 +24,11 @@ export function GetCoinImage(coinName) {
 
 //https://cdn3.iconfinder.com/data/icons/mini-icon-set-web-design-device/91/Web_-_Design_-_Device_97-512.png
 
-export function GetWalletAmount (wallets, newCoinPrices) {
+export function GetWalletAmount (wallets, coinPrices) {
     var newTotalValue = 0
     for (var i = 0; i < wallets.length; i++){
         var coinSymbol = wallets[i].Currency
-        newTotalValue += newCoinPrices[coinSymbol]*wallets[i].Amount
+        newTotalValue += coinPrices[coinSymbol]*wallets[i].Amount
     }
     return newTotalValue
 }

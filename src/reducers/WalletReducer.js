@@ -31,6 +31,9 @@ const INITIAL_STATE = {
     priceView: {
         "BTC": 0,
     },
+    coinPrices: {
+        "BTC": 0,
+    },
     isInitialized: false,
     qrcodeVaue: '',
 }
@@ -63,7 +66,7 @@ export default (state= INITIAL_STATE, action) => {
         case WALLET_COINMARKETCAP_API_FETCH_SUCCESS:
             return {
                 ...state, 
-                newCoinPrices: action.payload.newCoinPrices, 
+                coinPrices: action.payload.coinPrices, 
                 walletTotal: action.payload.walletTotal, 
                 loading: false 
             }

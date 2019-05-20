@@ -16,7 +16,7 @@ class ScanScreen extends Component {
 
   onSuccess(e) {
     this.props.scanQRcode(e.data)
-    Actions.walletDetail(this.props)
+    Actions.walletDetailExtended(this.props)
   }
 
   render() {

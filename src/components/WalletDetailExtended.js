@@ -326,7 +326,7 @@ const styles = {
         marginBottom:20,
     },
     listStyle: {
-        height: "45%",
+        height: "40%",
     }
 }
 

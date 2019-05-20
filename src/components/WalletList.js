@@ -19,13 +19,18 @@ class WalletList extends Component {
             this.props.walletInit()
             console.log("Initializing wallet")
         }  
-        this.props.walletFetch(this.props.wallets);    
+        this.interval = setInterval(() => this.props.walletFetch(this.props.wallets), 20000);
+    }
+    
+
+    componentWillUnmount() {
+        clearInterval(this.interval);
     }
 
     renderRow(wallet) {
         return (
             <View style={styles.tabStyle}>
-                <WalletDetail  key={wallet.index}  wallet={wallet.item} coinPrices={this.props.newCoinPrices} />
+                <WalletDetail  key={wallet.index}  wallet={wallet.item}  />
             </View>
         ); 
     }
@@ -77,8 +82,8 @@ const styles = {
 };
 
 const mapStateToProps = ({wallet}) => {
-    const {wallets, newCoinPrices, walletTotal, loading, isInitialized} = wallet
-    return  {wallets, newCoinPrices, walletTotal, loading, isInitialized}
+    const {wallets, coinPrices, walletTotal, loading, isInitialized} = wallet
+    return  {wallets, coinPrices, walletTotal, loading, isInitialized}
 };
 
   

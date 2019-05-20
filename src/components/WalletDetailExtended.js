@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Text, View, Image, TouchableOpacity, KeyboardAvoidingView, Clipboard, FlatList, Dimensions, Keyboard } from 'react-native';
+import { Text, View, Image, TouchableOpacity, KeyboardAvoidingView, Clipboard, List, FlatList, Keyboard } from 'react-native';
 import { Card, CardSection, Button } from './common';
 import { WeiToEther } from '../Util.js'
 import { walletViewChanged, selectWalletChart, scanQRcode, getWalletTxs, sendTx } from '../actions';
@@ -95,11 +95,11 @@ class WalletDetailExtended extends Component  {
     };
 
     render () {
-        const { priceView, qrcodeValue } = this.props
+        const { priceView } = this.props
         const { name, currency, publicKey } = this.props.wallet;
         const { headerContentStyle, headerTextStyle, 
             thumbnail_style, thumbnailContainerStyle,
-            amountContentStyle, screenStyle, txStyle, footerStyle } = styles;
+            amountContentStyle, screenStyle, txStyle, footerStyle, listStyle } = styles;
         return ( 
             <View style={screenStyle}>
                 <View >
@@ -121,7 +121,7 @@ class WalletDetailExtended extends Component  {
                     </View>
                 </Card>
                 </View>
-                <View>
+                <View style={listStyle}>
                 <FlatList 
                     style={txStyle}
                     data={this.props.txs}
@@ -129,6 +129,8 @@ class WalletDetailExtended extends Component  {
                     keyExtractor={(item, index) => index.toString()}
                     ListEmptyComponent={this.emptyTxList}
                 />
+                </View>
+                <View>
                 <CardSection style={footerStyle}>
                     <Button onPress={() => {
                         this.onSendPress();
@@ -239,8 +241,8 @@ class WalletDetailExtended extends Component  {
 
 const mapStateToProps = (state, ownProps) => {
     const expanded = state.wallet.selectedWalletId === ownProps.wallet.currency;
-    const {priceView, qrcodeValue, txs} = state.wallet
-    return  {priceView, qrcodeValue, txs, expanded}
+    const {priceView, qrcodeValue, txs, coinPrices} = state.wallet
+    return  {priceView, qrcodeValue, txs, coinPrices, expanded}
 };
 
 export default connect(mapStateToProps, {walletViewChanged, selectWalletChart, scanQRcode, getWalletTxs, sendTx})(WalletDetailExtended);
@@ -322,6 +324,9 @@ const styles = {
     txStyle: {
         marginTop: 20,
         marginBottom:20,
+    },
+    listStyle: {
+        height: "45%",
     }
 }
 
@@ -332,7 +337,7 @@ shownCardValue  = (valueView, ownProps) => {
         case 0:
             return  (<Text> {WeiToEther(amount) + " " + currency} </Text>);
         case 1:
-            return (<Text> {"$" + (WeiToEther(amount)*coinPrices["ETH"]).toFixed(2)} </Text>)
+            return (<Text> {"$" + (WeiToEther(amount)*coinPrices["BTC"]).toFixed(2)} </Text>)
         case 2:
             return (<Text> {"$" + coinPrices[currency]} </Text>);
         default:
